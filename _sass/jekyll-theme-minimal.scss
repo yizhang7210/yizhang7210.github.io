@@ -285,13 +285,13 @@ footer {
   }
 }
 
-table tbody, 
+table tbody,
 table thead {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
-  alig-items: stretch;
+  align-items: stretch;
   border-spacing: 1px;
 }
 
@@ -302,7 +302,7 @@ table tr {
   border: 1px solid black;
   border-collapse: separate;
   border-radius: 15px;
-  min-height: 10vh;
+  min-height: 5vh;
 }
 
 table td {
