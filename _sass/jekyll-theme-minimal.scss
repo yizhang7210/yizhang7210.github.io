@@ -11,11 +11,11 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color:#222;
-  margin:0 0 20px;
+  margin:20px 0 10px;
 }
 
 p, ul, ol, table, pre, dl {
-  margin:0 0 20px;
+  margin:0 0 12px;
 }
 
 h1, h2, h3 {
@@ -231,7 +231,7 @@ footer {
     border:1px solid #e5e5e5;
     border-width:1px 0;
     padding:20px 0;
-    margin:0 0 20px;
+    margin:0 0 10px;
   }
 
   header a small {
@@ -298,7 +298,7 @@ table thead {
 table tr {
   flex: 1 1 33%;
   padding: 10px;
-  margin: 10px;
+  margin: 3px;
   border: 1px solid black;
   border-collapse: separate;
   border-radius: 15px;

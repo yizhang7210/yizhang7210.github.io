@@ -23,12 +23,45 @@ email: yi.zhang7210@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Software Engineer since 2015 <br/>
   Creative problem solver <br/>
-  <b>Not</b> a professional in Cloud Infra <br/>
-  <b>Not</b> a full-time ML/AI model builder <br/>
-  <br/>
+  <em>Not</em> a professional in Cloud Infra <br/>
+  <em>Not</em> a full-time ML/AI model builder <br/>
+  <div>
+    <b>Proficient in:</b>
+    <ul>
+      <li>Python & Django</li>
+      <li>Java & Spring</li>
+      <li>SQL (PostgreSQL)</li>
+      <li>AWS</li>
+      <li>Spark Streaming</li>
+    </ul>
+    <b>Experienced in:</b>
+    <ul>
+      <li>C++</li>
+      <li>JavaScript & Node.js</li>
+      <li>Kubernetes</li>
+      <li>Snowflake</li>
+    </ul>
+    <b>Worked with:</b>
+    <ul>
+      <li>Matlab</li>
+      <li>R</li>
+      <li>MongoDB</li>
+      <li>Elasticsearch</li>
+      <li>Kafka Streaming</li>
+    </ul>
+    <b>Explored:</b>
+    <ul>
+      <li>Haskell</li>
+      <li>Elm</li>
+      <li>React & Vue</li>
+      <li>Google Cloud</li>
+      <li>Keras</li>
+    </ul>
+  </div>
   <a href="https://www.linkedin.com/in/yizhang7210/">LinkedIn</a><br/>
   <a href="https://github.com/yizhang7210/">Github</a><br/>
   <a href="https://pseudofreedom.com/">Engineering Blog</a><br/>
+
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
