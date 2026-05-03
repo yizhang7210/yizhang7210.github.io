@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import companies from '../../data/companies.json';
+
+export function getStaticPaths() {
+  return companies.map((company) => ({
+    params: { slug: company.slug },
+    props: { company },
+  }));
+}
+
+const { company } = Astro.props;
+
+function formatDate(d: string) {
+  if (d === 'present') return 'Present';
+  const [year, month] = d.split('-');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[parseInt(month) - 1]} ${year}`;
+}
+---
+
+<BaseLayout title={`${company.name} - Yi Zhang`}>
+  <a href="/">&larr; Back to Journey</a>
+
+  <header class="company-header">
+    <h1>{company.name}</h1>
+    <p class="tenure">{formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
+    <p class="summary">{company.summary}</p>
+  </header>
+
+  <section class="roles">
+    {company.roles.map((role) => (
+      <div class="role-card">
+        <h2>{role.title}</h2>
+        <p class="team">{role.team}</p>
+        <p class="dates">{formatDate(role.startDate)} – {formatDate(role.endDate)}</p>
+        <p>{role.summary}</p>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .company-header {
+    margin: var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .company-header h1 {
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .tenure {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .summary {
+    margin-top: var(--spacing-md);
+    font-size: 1.1rem;
+  }
+
+  .roles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .role-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: var(--spacing-lg);
+  }
+
+  .role-card h2 {
+    color: var(--color-primary);
+    margin: 0 0 var(--spacing-sm);
+  }
+
+  .team {
+    color: var(--color-accent);
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .dates {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: var(--spacing-sm) 0;
+  }
+</style>

@@ -1,0 +1,206 @@
+[
+  {
+    "name": "MathWorks (internship)",
+    "slug": "mathworks",
+    "logo": "/logos/mathworks.png",
+    "order": 1,
+    "rating": 7,
+    "city": "Cambridge",
+    "country": "UK",
+    "startDate": "2013-07",
+    "endDate": "2013-09",
+    "summary": "Internship at the makers of MATLAB and Simulink.",
+    "roles": [
+      {
+        "title": "Software Engineer Intern",
+        "team": "",
+        "startDate": "2013-07",
+        "endDate": "2013-09",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "OANDA",
+    "slug": "oanda",
+    "logo": "/logos/oanda.png",
+    "order": 2,
+    "rating": 6.5,
+    "city": "Toronto",
+    "country": "Canada",
+    "startDate": "2015-09",
+    "endDate": "2016-04",
+    "summary": "TODO",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2015-09",
+        "endDate": "2016-04",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "PaymentUs",
+    "slug": "paymentus",
+    "logo": "/logos/paymentus.png",
+    "order": 3,
+    "rating": 2,
+    "city": "Toronto",
+    "country": "Canada",
+    "startDate": "2016-04",
+    "endDate": "2016-05",
+    "summary": "TODO",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2016-04",
+        "endDate": "2016-05",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "Connected (now Thoughtworks)",
+    "slug": "thoughtworks-canada",
+    "logo": "/logos/thoughtworks.png",
+    "order": 4,
+    "rating": 7.5,
+    "city": "Toronto",
+    "country": "Canada",
+    "startDate": "2016-05",
+    "endDate": "2017-03",
+    "summary": "Formerly Connected.",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2016-05",
+        "endDate": "2017-03",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "Kooltra",
+    "slug": "kooltra",
+    "logo": "/logos/kooltra.png",
+    "order": 5,
+    "rating": 7,
+    "city": "Toronto",
+    "country": "Canada",
+    "startDate": "2017-04",
+    "endDate": "2018-09",
+    "summary": "TODO",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2017-04",
+        "endDate": "2018-09",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "Canny (part-time)",
+    "slug": "canny",
+    "logo": "/logos/canny.png",
+    "order": 6,
+    "rating": 8,
+    "track": "parallel",
+    "city": "Remote",
+    "country": "Remote",
+    "startDate": "2018-04",
+    "endDate": "2018-07",
+    "summary": "Part-time role.",
+    "roles": [
+      {
+        "title": "Software Engineer (Part-time)",
+        "team": "",
+        "startDate": "2018-04",
+        "endDate": "2018-07",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "TransferWise (now Wise)",
+    "slug": "wise",
+    "logo": "/logos/wise.png",
+    "order": 7,
+    "rating": 7.5,
+    "city": "New York",
+    "country": "USA",
+    "startDate": "2018-10",
+    "endDate": "2020-10",
+    "summary": "Formerly TransferWise.",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2018-10",
+        "endDate": "2020-10",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "Unit21",
+    "slug": "unit21",
+    "logo": "/logos/unit21.png",
+    "order": 8,
+    "rating": 9,
+    "city": "San Francisco",
+    "country": "USA",
+    "startDate": "2020-10",
+    "endDate": "2024-02",
+    "summary": "TODO",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2020-10",
+        "endDate": "2021-03",
+        "summary": "TODO"
+      },
+      {
+        "title": "Tech Lead Manager",
+        "team": "",
+        "startDate": "2021-03",
+        "endDate": "2023-04",
+        "summary": "TODO"
+      },
+      {
+        "title": "Staff Software Engineer",
+        "team": "",
+        "startDate": "2023-04",
+        "endDate": "2024-02",
+        "summary": "TODO"
+      }
+    ]
+  },
+  {
+    "name": "Meta",
+    "slug": "meta",
+    "logo": "/logos/meta.png",
+    "order": 9,
+    "rating": 6.5,
+    "city": "Menlo Park",
+    "country": "USA",
+    "startDate": "2024-02",
+    "endDate": "2026-05",
+    "summary": "TODO",
+    "roles": [
+      {
+        "title": "Software Engineer",
+        "team": "",
+        "startDate": "2024-02",
+        "endDate": "2026-05",
+        "summary": "TODO"
+      }
+    ]
+  }
+]

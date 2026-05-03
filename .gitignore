@@ -4,3 +4,6 @@ _site
 .jekyll-metadata
 vendor
 Gemfile.lock
+
+career-site/node_modules/
+career-site/dist/

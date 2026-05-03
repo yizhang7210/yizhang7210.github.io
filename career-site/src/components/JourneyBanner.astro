@@ -1,0 +1,227 @@
+---
+import companies from '../data/companies.json';
+
+const sorted = [...companies].sort((a, b) => a.order - b.order);
+const svgWidth = 1200;
+const svgHeight = 600;
+const paddingX = 60;
+const paddingTop = 50;
+const paddingBottom = 50;
+const barHeight = 24;
+const parallelOffset = 0;
+const minBarWidth = 9;
+
+const startYear = Math.min(...sorted.map((c) => parseInt(c.startDate.split('-')[0])));
+const endYear = new Date().getFullYear() + 1;
+const totalYears = endYear - startYear;
+
+function dateToX(d: string) {
+  if (d === 'present') return paddingX + (svgWidth - 2 * paddingX);
+  const [year, month] = d.split('-').map(Number);
+  const yearFrac = (year - startYear) + (month - 1) / 12;
+  return paddingX + (yearFrac / totalYears) * (svgWidth - 2 * paddingX);
+}
+
+const timelineY = svgHeight - paddingBottom;
+const chartHeight = timelineY - paddingTop - barHeight;
+
+const countryColors: Record<string, string> = {
+  'Canada': '#e74c3c',
+  'USA': '#3b82f6',
+  'UK': '#10b981',
+  'Remote': '#8b5cf6',
+};
+const defaultColor = '#9ca3af';
+
+const countries = [...new Set(sorted.map((c) => c.country))];
+
+const bars = sorted.map((company) => {
+  const x1 = dateToX(company.startDate);
+  const x2 = dateToX(company.endDate);
+  const rawWidth = x2 - x1;
+  const width = Math.max(rawWidth, minBarWidth);
+  const isParallel = company.track === 'parallel';
+  const barY = paddingTop + ((10 - company.rating) / 9) * chartHeight;
+  const y = isParallel ? barY + parallelOffset : barY;
+  const color = countryColors[company.country] || defaultColor;
+  const opacity = 0.6 + (company.rating / 10) * 0.4;
+  return { ...company, x1, width, y, barY, isParallel, color, opacity };
+});
+
+const yearMarks = Array.from({ length: totalYears + 1 }, (_, i) => ({
+  year: startYear + i,
+  x: paddingX + (i / totalYears) * (svgWidth - 2 * paddingX),
+}));
+
+const labelBelow = new Set([]);
+const labelAbove = new Set(['unit21']);
+
+function labelSide(bar: typeof bars[0], index: number) {
+  if (labelAbove.has(bar.slug)) return 'above';
+  if (labelBelow.has(bar.slug)) return 'below';
+  if (bar.y - paddingTop < 60) return 'below';
+  if (index > 0 && Math.abs(bars[index - 1].y - bar.y) < 40
+      && bar.x1 - bars[index - 1].x1 < 120) return 'below';
+  return 'above';
+}
+---
+
+<div class="journey-banner">
+  <h2 class="banner-title">Professional Journey</h2>
+  <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="xMidYMid meet">
+    <text class="axis-label" x={20} y={(paddingTop + timelineY) / 2} text-anchor="middle" transform={`rotate(-90, 20, ${(paddingTop + timelineY) / 2})`}>Happiness</text>
+    <text class="axis-marker" x={20} y={paddingTop + 5} text-anchor="middle">+</text>
+    <text class="axis-marker" x={20} y={timelineY - 5} text-anchor="middle">−</text>
+
+    {yearMarks.map((mark) => (
+      <g>
+        <line
+          class="grid-line"
+          x1={mark.x}
+          y1={paddingTop}
+          x2={mark.x}
+          y2={timelineY}
+        />
+        <text class="timeline-year" x={mark.x} y={timelineY + 20} text-anchor="middle">
+          {mark.year}
+        </text>
+      </g>
+    ))}
+
+    <line
+      class="timeline-axis"
+      x1={paddingX}
+      y1={timelineY}
+      x2={svgWidth - paddingX}
+      y2={timelineY}
+    />
+
+    {countries.map((country, i) => (
+      <g transform={`translate(${svgWidth - paddingX - countries.length * 100 + i * 100}, ${paddingTop - 20})`}>
+        <rect width="14" height="14" rx="3" ry="3" fill={countryColors[country] || defaultColor} opacity="0.85" />
+        <text class="legend-label" x={20} y={12}>{country}</text>
+      </g>
+    ))}
+
+    {bars.map((bar, i) => {
+      const side = labelSide(bar, i);
+      const labelY = side === 'above' ? bar.y - 5 : bar.y + barHeight + 13;
+      return (
+        <a href={`/company/${bar.slug}/`}>
+          <g class={`journey-bar ${bar.isParallel ? 'parallel' : ''}`}>
+            <image
+              href={bar.logo}
+              x={bar.x1 - 22}
+              y={bar.y + (barHeight - 20) / 2}
+              width="20"
+              height="20"
+            />
+            <rect
+              x={bar.x1}
+              y={bar.y}
+              width={bar.width}
+              height={barHeight}
+              rx="5"
+              ry="5"
+              fill={bar.color}
+              opacity={bar.opacity}
+            />
+            <text
+              class="bar-name"
+              x={bar.x1 + bar.width / 2}
+              y={labelY}
+              text-anchor="middle"
+            >
+              {bar.name}
+            </text>
+          </g>
+        </a>
+      );
+    })}
+  </svg>
+</div>
+
+<style>
+  .journey-banner {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0 var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .banner-title {
+    color: var(--color-primary);
+    max-width: var(--max-width);
+    margin: 0 auto var(--spacing-sm);
+  }
+
+  .journey-banner svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .timeline-axis {
+    stroke: #d1d5db;
+    stroke-width: 1.5;
+  }
+
+  .grid-line {
+    stroke: #e5e7eb;
+    stroke-width: 1;
+    stroke-dasharray: none;
+  }
+
+  .timeline-year {
+    font-size: 11px;
+    fill: #6b7280;
+  }
+
+  .journey-bar rect {
+    transition: filter 0.2s, opacity 0.2s;
+    cursor: pointer;
+  }
+
+  .journey-bar:hover rect {
+    filter: drop-shadow(0 3px 10px rgba(99, 102, 241, 0.35)) brightness(1.1);
+  }
+
+  .journey-bar.parallel rect {
+    opacity: 0.85;
+  }
+
+  .journey-bar.parallel:hover rect {
+    opacity: 1;
+  }
+
+  .bar-name {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #4b5563;
+    pointer-events: none;
+  }
+
+  .journey-bar:hover .bar-name {
+    fill: #1f2937;
+  }
+
+  .legend-label {
+    font-size: 12px;
+    fill: #6b7280;
+  }
+
+  .axis-label {
+    font-size: 12px;
+    fill: #6b7280;
+    letter-spacing: 0.05em;
+  }
+
+  .axis-marker {
+    font-size: 14px;
+    fill: #6b7280;
+  }
+
+  a {
+    text-decoration: none;
+  }
+</style>
