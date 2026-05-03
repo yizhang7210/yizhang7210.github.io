@@ -5,13 +5,19 @@ import JourneyBanner from '../components/JourneyBanner.astro';
 
 <BaseLayout title="Yi Zhang - Professional Journey">
   <h1>Yi Zhang</h1>
+  <p class="subtitle">Software Builder | Creative Problem Solver</p>
   <JourneyBanner />
 </BaseLayout>
 
 <style>
   h1 {
     color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-sm);
   }
 
 </style>

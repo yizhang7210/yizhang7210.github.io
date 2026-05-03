@@ -1,0 +1,59 @@
+---
+name: "Unit21"
+logo: "/logos/unit21.png"
+order: 8
+rating: 9
+city: "San Francisco"
+country: "USA"
+startDate: "2020-10"
+endDate: "2024-02"
+roles:
+  - title: "Software Engineer"
+    team: ""
+    startDate: "2020-10"
+    endDate: "2021-03"
+  - title: "Tech Lead Manager"
+    team: ""
+    startDate: "2021-03"
+    endDate: "2023-04"
+  - title: "Staff Software Engineer"
+    team: ""
+    startDate: "2023-04"
+    endDate: "2024-02"
+---
+
+TODO - background
+
+## The Work
+
+<div class="role-card">
+
+### Software Engineer (Oct 2020 – Mar 2021)
+
+TODO
+
+</div>
+
+<div class="role-card">
+
+### Tech Lead Manager (Mar 2021 – Apr 2023)
+
+TODO
+
+</div>
+
+<div class="role-card">
+
+### Staff Software Engineer (Apr 2023 – Feb 2024)
+
+TODO
+
+</div>
+
+## Learnings
+
+TODO
+
+## People
+
+TODO

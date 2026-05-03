@@ -44,3 +44,16 @@ a:hover {
   color: var(--color-accent-light);
   text-decoration: underline;
 }
+
+.role-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.role-card h3 {
+  color: var(--color-primary);
+  margin: 0 0 var(--spacing-sm);
+}

@@ -18,6 +18,12 @@ I'm imagining the picture to be a bit more horizontal, with the x-axis being eac
 
 Each step should be clickable, which would take me to a separate, detailed page of my experience at the company, including my start/end date, the projects I worked on, etc. etc.
 
+# Individual company page
+Clicking into each company's page, I'd like a few sections:
+- Background
+- The Work (further split in sub-sections with heading based on time & role)
+- Learnings
+- People
 
 # Details
 

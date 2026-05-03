@@ -1,15 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import companies from '../../data/companies.json';
+import { getCollection, render } from 'astro:content';
 
-export function getStaticPaths() {
-  return companies.map((company) => ({
-    params: { slug: company.slug },
-    props: { company },
+export async function getStaticPaths() {
+  const entries = await getCollection('companies');
+  return entries.map((entry) => ({
+    params: { slug: entry.id.replace(/\.md$/, '') },
+    props: { entry },
   }));
 }
 
-const { company } = Astro.props;
+const { entry } = Astro.props;
+const company = entry.data;
+const { Content } = await render(entry);
 
 function formatDate(d: string) {
   if (d === 'present') return 'Present';
@@ -23,21 +26,18 @@ function formatDate(d: string) {
   <a href="/">&larr; Back to Journey</a>
 
   <header class="company-header">
-    <h1>{company.name}</h1>
-    <p class="tenure">{formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
-    <p class="summary">{company.summary}</p>
+    <div class="header-top">
+      <img src={company.logo} alt={`${company.name} logo`} class="company-logo" />
+      <div>
+        <h1>{company.name}</h1>
+        <p class="meta">{company.city}, {company.country} &middot; {formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
+      </div>
+    </div>
   </header>
 
-  <section class="roles">
-    {company.roles.map((role) => (
-      <div class="role-card">
-        <h2>{role.title}</h2>
-        <p class="team">{role.team}</p>
-        <p class="dates">{formatDate(role.startDate)} – {formatDate(role.endDate)}</p>
-        <p>{role.summary}</p>
-      </div>
-    ))}
-  </section>
+  <div class="content">
+    <Content />
+  </div>
 </BaseLayout>
 
 <style>
@@ -47,45 +47,43 @@ function formatDate(d: string) {
     border-bottom: 1px solid var(--color-border);
   }
 
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .company-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
   .company-header h1 {
     color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
+    margin: 0;
   }
 
-  .tenure {
+  .meta {
     color: var(--color-text-muted);
-    font-size: 1.1rem;
-    margin: 0;
+    margin: var(--spacing-sm) 0 0;
   }
 
-  .summary {
-    margin-top: var(--spacing-md);
-    font-size: 1.1rem;
+  .content {
+    margin-bottom: var(--spacing-xl);
   }
 
-  .roles {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
+  .section {
+    margin-bottom: var(--spacing-xl);
   }
 
-  .role-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: var(--spacing-lg);
-  }
-
-  .role-card h2 {
+  .section h2 {
     color: var(--color-primary);
-    margin: 0 0 var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
   }
 
-  .team {
-    color: var(--color-accent);
-    font-weight: 500;
-    margin: 0;
-  }
 
   .dates {
     color: var(--color-text-muted);
