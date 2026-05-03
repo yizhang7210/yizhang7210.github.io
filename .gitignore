@@ -7,3 +7,4 @@ Gemfile.lock
 
 career-site/node_modules/
 career-site/dist/
+career-site/.astro/
