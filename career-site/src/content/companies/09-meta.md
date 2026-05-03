@@ -7,11 +7,6 @@ city: "Menlo Park"
 country: "USA"
 startDate: "2024-02"
 endDate: "2026-05"
-roles:
-  - title: "Software Engineer"
-    team: ""
-    startDate: "2024-02"
-    endDate: "2026-05"
 ---
 
 TODO - background

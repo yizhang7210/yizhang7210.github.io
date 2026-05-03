@@ -7,11 +7,6 @@ city: "New York"
 country: "USA"
 startDate: "2018-10"
 endDate: "2020-10"
-roles:
-  - title: "Software Engineer"
-    team: ""
-    startDate: "2018-10"
-    endDate: "2020-10"
 ---
 
 TODO - background

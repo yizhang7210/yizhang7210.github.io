@@ -8,11 +8,6 @@ city: "Remote"
 country: "Remote"
 startDate: "2018-04"
 endDate: "2018-07"
-roles:
-  - title: "Software Engineer (Part-time)"
-    team: ""
-    startDate: "2018-04"
-    endDate: "2018-07"
 ---
 
 TODO - background

@@ -7,11 +7,6 @@ city: "Toronto"
 country: "Canada"
 startDate: "2015-09"
 endDate: "2016-04"
-roles:
-  - title: "Software Engineer"
-    team: ""
-    startDate: "2015-09"
-    endDate: "2016-04"
 ---
 
 TODO - background

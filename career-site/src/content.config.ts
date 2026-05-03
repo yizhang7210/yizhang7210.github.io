@@ -12,12 +12,6 @@ const companies = defineCollection({
     track: z.string().optional(),
     startDate: z.string(),
     endDate: z.string(),
-    roles: z.array(z.object({
-      title: z.string(),
-      team: z.string(),
-      startDate: z.string(),
-      endDate: z.string(),
-    })),
   }),
 });
 
