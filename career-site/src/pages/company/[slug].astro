@@ -23,16 +23,14 @@ function formatDate(d: string) {
 ---
 
 <BaseLayout title={`${company.name} - Yi Zhang`}>
-  <a href="/">&larr; Back to Journey</a>
+  <a href="/">&larr; Back</a>
 
   <header class="company-header">
     <div class="header-top">
       <img src={company.logo} alt={`${company.name} logo`} class="company-logo" />
-      <div>
-        <h1>{company.name}</h1>
-        <p class="meta">{company.city}, {company.country} &middot; {formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
-      </div>
+      <h1>{company.name}</h1>
     </div>
+    <p class="meta">{company.city}, {company.country} &middot; {formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
   </header>
 
   <div class="content">
@@ -49,7 +47,7 @@ function formatDate(d: string) {
 
   .header-top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--spacing-md);
   }
 

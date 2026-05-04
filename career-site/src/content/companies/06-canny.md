@@ -22,7 +22,11 @@ TODO
 
 </div>
 
-## Learnings
+## Exit
+
+TODO
+
+## Takeaways
 
 TODO
 

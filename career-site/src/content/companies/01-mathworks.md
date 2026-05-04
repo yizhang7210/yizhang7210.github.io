@@ -21,16 +21,16 @@ I only secured interviews with 2 UK based companies, and was fortunate to receiv
 ### Software Engineer Intern (Jul 2013 – Sep 2013)
 I worked on the Simulink team, specifically on the AUTOSAR (Automotive Open System Architecture) integration, making it easier to sync models between Simulink & AUTOSAR's authoring tool.
 
-My changes on its data dictionary ended up in the 2014a release.
+My feature supporting data dictionary in Simulink ended up in the 2014a release.
 
 </div>
 
-## Learnings
+## Takeaways
 This was my first ever experience in the world of technology/software.
-My biggest takeaway from this experience was gaining familiarity with the full software lifecycle & tooling, including:
+My biggest takeaway was gaining familiarity with the full software lifecycle & tooling, including:
 - version control with CVS
 - the spec -> develop -> QA -> release iteration cycle
-- continuous integration with build & test
+- build & test pipelines
 
 I wrote a good amount of MATLAB code, and learned the basics of C++.
 
