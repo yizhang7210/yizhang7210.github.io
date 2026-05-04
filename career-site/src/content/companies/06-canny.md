@@ -7,7 +7,7 @@ track: "parallel"
 city: "Remote"
 country: "Remote"
 startDate: "2018-04"
-endDate: "2018-07"
+endDate: "2018-09"
 ---
 
 TODO - background
@@ -16,7 +16,7 @@ TODO - background
 
 <div class="role-card">
 
-### Software Engineer, Part-time (Apr 2018 – Jul 2018)
+### Software Engineer, Part-time (Apr 2018 – Sep 2018)
 
 TODO
 
