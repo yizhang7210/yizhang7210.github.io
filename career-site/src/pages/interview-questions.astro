@@ -1,17 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+const entries = await getCollection('pages');
+const entry = entries.find(e => e.id.includes('interview-questions'));
+const page = entry!.data;
+const { Content } = await render(entry!);
 ---
 
-<BaseLayout title="Interview Questions - Yi Zhang">
+<BaseLayout title={`${page.title} - Yi Zhang`}>
   <a href="/">&larr; Back</a>
 
   <header class="page-header">
-    <h1>Interview Questions</h1>
-    <p class="subtitle">Questions I ask companies during the interview process.</p>
+    <h1>{page.title}</h1>
+    {page.subtitle && <p class="subtitle">{page.subtitle}</p>}
   </header>
 
   <div class="content">
-    <p>TODO</p>
+    <Content />
   </div>
 </BaseLayout>
 

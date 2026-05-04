@@ -25,7 +25,7 @@ I only lasted 3 weeks at the company. There were so many red flags from day 1.
 Here are a few that stood out:
 - They only allowed Windows laptops.
 - They used git as version control, but most people didn't know how to use it and were terrified of merge conflicts. Rebase was banned, no matter what.
-- The way they did code reviews was to take a **screenshot** of the diff, and send it around via **emails** to recipients of the author's choosing.
+- The way they did code reviews was to take a **screenshot** of the diff, and send it around via **emails** to recipients of the author's choosing. 🤯
 - Their software architecture involves a "core" component and an extremely large number of "plug-ins" which are "owned" by individual engineers and required no code reviews.
 - They had a "Software Architect" person who goes around the office and debates people who disagreed with him, using his days of programming on punch cards as the main argument for everything.
 - They had a "Project Manager" person who would literally come by my desk every day to check in on my progress.

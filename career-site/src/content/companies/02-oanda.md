@@ -46,4 +46,4 @@ Being a new grad in my first full-time job, I didn't know what to do with my dis
 ## People
 - I appreciated the leadership of [Chris Wells](https://www.linkedin.com/in/chriswellsdev/) & [Jay Primeau](https://www.linkedin.com/in/jasonprimeau/) giving me a chance to join the team.
 - [Rob Danek](https://www.linkedin.com/in/rdanek/) and [Alan Chan](https://www.linkedin.com/in/ayfchan/) had taught me so much about being an effective software engineer, and I'm glad to have become good friends with them too.
-- [Michael Reimer](https://www.linkedin.com/in/michael-reimer-0245a2248/) had become a mentor who I've been keeping in touch with until this day.
+- [Michael Reimer](https://www.linkedin.com/in/michael-reimer-0245a2248/) had become a mentor who I've been keeping in touch with to this day.

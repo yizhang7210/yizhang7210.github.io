@@ -15,4 +15,12 @@ const companies = defineCollection({
   }),
 });
 
-export const collections = { companies };
+const pages = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    subtitle: z.string().optional(),
+  }),
+});
+
+export const collections = { companies, pages };
