@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Interview Questions - Yi Zhang">
+  <a href="/">&larr; Back</a>
+
+  <header class="page-header">
+    <h1>Interview Questions</h1>
+    <p class="subtitle">Questions I ask companies during the interview process.</p>
+  </header>
+
+  <div class="content">
+    <p>TODO</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin: var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-header h1 {
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    margin: var(--spacing-sm) 0 0;
+  }
+
+  .content {
+    margin-bottom: var(--spacing-xl);
+  }
+</style>

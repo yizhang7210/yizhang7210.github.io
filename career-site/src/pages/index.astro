@@ -7,6 +7,10 @@ import JourneyBanner from '../components/JourneyBanner.astro';
   <h1>Yi Zhang</h1>
   <p class="subtitle">Software Builder | Creative Problem Solver</p>
   <JourneyBanner />
+  <h2 class="section-title">Resources</h2>
+  <ul class="resources">
+    <li><a href="/interview-questions/">Interview Questions</a> — Questions I ask companies during the interview process</li>
+  </ul>
 </BaseLayout>
 
 <style>
@@ -18,6 +22,14 @@ import JourneyBanner from '../components/JourneyBanner.astro';
   .subtitle {
     color: var(--color-text-muted);
     margin-top: var(--spacing-sm);
+  }
+
+  .section-title {
+    color: var(--color-primary);
+  }
+
+  .resources {
+    line-height: 2;
   }
 
 </style>
