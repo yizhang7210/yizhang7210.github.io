@@ -15,6 +15,9 @@ That's when I first started working with agency recruiters.
 As **compensation** was my main focus for this change, I was easily convinced by a very experienced recruiter to take
 the offer from PaymentUs, which came with a 44% increase in my base salary.
 
+PaymentUs has much more of a traditional business setup, and its office was a bit remote, a 25+ minute drive
+from home. But they felt like worthy sacrifices at the time.
+
 ## The Work
 
 <div class="role-card">

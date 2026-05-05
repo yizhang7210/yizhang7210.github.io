@@ -4,13 +4,19 @@ import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const entries = await getCollection('companies');
-  return entries.map((entry) => ({
-    params: { slug: entry.id.replace(/\.md$/, '').replace(/^\d+-/, '') },
-    props: { entry },
-  }));
+  const sorted = [...entries].sort((a, b) => a.data.order - b.data.order);
+  return sorted.map((entry, i) => {
+    const nextEntry = sorted[i + 1];
+    const nextSlug = nextEntry ? nextEntry.id.replace(/\.md$/, '').replace(/^\d+-/, '') : null;
+    const nextName = nextEntry ? nextEntry.data.name : null;
+    return {
+      params: { slug: entry.id.replace(/\.md$/, '').replace(/^\d+-/, '') },
+      props: { entry, nextSlug, nextName },
+    };
+  });
 }
 
-const { entry } = Astro.props;
+const { entry, nextSlug, nextName } = Astro.props;
 const company = entry.data;
 const { Content } = await render(entry);
 
@@ -23,7 +29,10 @@ function formatDate(d: string) {
 ---
 
 <BaseLayout title={`${company.name} - Yi Zhang`}>
-  <a href="/">&larr; Back</a>
+  <nav class="page-nav">
+    <a href="/">&larr; Back</a>
+    {nextSlug && <a href={`/company/${nextSlug}/`}>Next &rarr;</a>}
+  </nav>
 
   <header class="company-header">
     <div class="header-top">
@@ -39,6 +48,11 @@ function formatDate(d: string) {
 </BaseLayout>
 
 <style>
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .company-header {
     margin: var(--spacing-lg) 0;
     padding-bottom: var(--spacing-lg);
