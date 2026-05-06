@@ -15,8 +15,8 @@ That's when I first started working with agency recruiters.
 As **compensation** was my main focus for this change, I was easily convinced by a very experienced recruiter to take
 the offer from PaymentUs, which came with a 44% increase in my base salary.
 
-PaymentUs has much more of a traditional business setup, and its office was a bit remote, a 25+ minute drive
-from home. But they felt like worthy sacrifices at the time.
+PaymentUs had much more of a traditional business setup, and its office was a bit remote, a 25+ minute drive
+from home. But these felt like worthy sacrifices at the time.
 
 ## The Work
 
@@ -29,15 +29,15 @@ Here are a few that stood out:
 - They only allowed Windows laptops.
 - They used git as version control, but most people didn't know how to use it and were terrified of merge conflicts. Rebase was banned, no matter what.
 - The way they did code reviews was to take a **screenshot** of the diff, and send it around via **emails** to recipients of the author's choosing. 🤯
-- Their software architecture involves a "core" component and an extremely large number of "plug-ins" which are "owned" by individual engineers and required no code reviews.
-- They had a "Software Architect" person who goes around the office and debates people who disagreed with him, using his days of programming on punch cards as the main argument for everything.
+- Their software architecture involved a "core" component and an extremely large number of "plug-ins" which were "owned" by individual engineers and required no code reviews.
+- They had a "Software Architect" person who went around the office and debated people who disagreed with him, using his days of programming on punch cards as the main argument for everything.
 - They had a "Project Manager" person who would literally come by my desk every day to check in on my progress.
 - They didn't tell me there was a dress code, and gave me a serious warning when they saw me wearing jeans in the office.
 
 </div>
 
 ## Exit
-As I discovered more and more of the red flags in my first couple of weeks, I handed in my 2 weeks notice on the Wednesday morning of my third week.
+As I discovered more and more of the red flags in my first couple of weeks, I handed in my two weeks' notice on the Wednesday morning of my third week.
 
 By noon, I was escorted out of the building by their VP. I drove straight to the beach to rest.
 
@@ -48,4 +48,4 @@ By noon, I was escorted out of the building by their VP. I drove straight to the
 - Be skeptical of people who brag about programming on punch cards.
 
 ## People
-I made one friend - [Dennis](https://www.linkedin.com/in/denliu/), who introduced me to React.js.
+I made one friend — [Dennis](https://www.linkedin.com/in/denliu/), who introduced me to React.js.

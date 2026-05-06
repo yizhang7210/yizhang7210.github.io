@@ -57,3 +57,33 @@ a:hover {
   color: var(--color-primary);
   margin: 0 0 var(--spacing-sm);
 }
+
+.highlight-card {
+  background: #fefce8;
+  border-left: 4px solid var(--color-accent-warm);
+  border-radius: 4px;
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0 0;
+  font-size: 0.9rem;
+}
+
+.highlight-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  list-style: none;
+}
+
+.highlight-card summary::before {
+  content: '🎤 ';
+}
+
+.highlight-card[open] summary {
+  margin-bottom: var(--spacing-sm);
+}
+
+.highlight-card p {
+  margin: var(--spacing-sm) 0 0;
+}
+
