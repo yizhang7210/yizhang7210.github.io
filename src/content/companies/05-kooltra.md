@@ -10,7 +10,7 @@ startDate: "2017-04"
 endDate: "2018-09"
 ---
 Kooltra was a start-up with ~10 people and a founder/CEO who was a domain expert in Foreign Exchange (FX).
-Having developed my affinity for FX at OANDA, and getting offered a PM role here, I was happy to dive in.
+With my affinity for FX developed at OANDA, and a PM role on offer here, I was happy to dive in.
 
 ## The Work
 
@@ -44,7 +44,7 @@ I spent a lot of time with Adam in his office, debating & negotiating how to bui
 
 <div class="role-card">
 
-### Software Engineer - Back on track (Oct 2017 – Sept 2018)
+### Software Engineer - Back on track (Oct 2017 – Sep 2018)
 
 Everything changed for the better when Ryan joined.
 

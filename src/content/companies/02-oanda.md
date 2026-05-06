@@ -3,7 +3,7 @@ name: "OANDA"
 logo: "/logos/oanda.png"
 order: 2
 rating: 7
-scope: 4
+scope: 5
 city: "Toronto"
 country: "Canada"
 startDate: "2015-09"

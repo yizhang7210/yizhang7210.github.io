@@ -3,7 +3,7 @@ name: "PaymentUs"
 logo: "/logos/paymentus.png"
 order: 3
 rating: 2
-scope: 3
+scope: 4
 city: "Toronto"
 country: "Canada"
 startDate: "2016-04"
