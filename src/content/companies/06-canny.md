@@ -3,6 +3,7 @@ name: "Canny (part-time)"
 logo: "/logos/canny.png"
 order: 6
 rating: 8
+scope: 4
 track: "parallel"
 city: "Remote"
 country: "Remote"

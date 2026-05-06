@@ -3,6 +3,7 @@ name: "MathWorks (internship)"
 logo: "/logos/mathworks.png"
 order: 1
 rating: 7
+scope: 2
 city: "Cambridge"
 country: "UK"
 startDate: "2013-07"

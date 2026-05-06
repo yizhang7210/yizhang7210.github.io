@@ -7,6 +7,7 @@ const companies = defineCollection({
     logo: z.string(),
     order: z.number(),
     rating: z.number(),
+    scope: z.number(),
     city: z.string(),
     country: z.string(),
     track: z.string().optional(),

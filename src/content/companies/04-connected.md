@@ -2,7 +2,8 @@
 name: "Connected (now Thoughtworks)"
 logo: "/logos/thoughtworks.png"
 order: 4
-rating: 7.5
+rating: 7
+scope: 6
 city: "Toronto"
 country: "Canada"
 startDate: "2016-05"

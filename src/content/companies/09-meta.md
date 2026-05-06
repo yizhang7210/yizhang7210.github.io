@@ -2,7 +2,8 @@
 name: "Meta"
 logo: "/logos/meta.png"
 order: 9
-rating: 6.5
+rating: 6
+scope: 8
 city: "Menlo Park"
 country: "USA"
 startDate: "2024-02"

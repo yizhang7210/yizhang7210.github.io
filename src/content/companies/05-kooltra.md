@@ -2,7 +2,8 @@
 name: "Kooltra"
 logo: "/logos/kooltra.png"
 order: 5
-rating: 7
+rating: 8
+scope: 8
 city: "Toronto"
 country: "Canada"
 startDate: "2017-04"
@@ -22,8 +23,8 @@ The first thing I realized walking into Kooltra was that the people were smart, 
 
 The engineering set-up was a big mess, created by the VP of R&D (let's call him Men), who had a stellar resume with a Ph.D. and an MBA, but no practical experience building software.
 - Nobody knew git branching, so for the same codebase, everyone had their own **repo**, and would force push into a central repo for integration.
-- On top of this, everyone created separate repos for prior versions of the software. One codebase ended up being cloned into 30 repos (that were not even forks of each other) across the team.
-- The code that went into production wasn't built from source control, so unintentional changes would frequently leak into production with nobody noticing.
+- On top of this, everyone created separate repos for prior versions of the software. One codebase ended up being cloned into 30 repos (that were not even forks of each other) across the team. 🤯
+- The code that went into production wasn't built from source control, so unintentional changes would frequently leak into production with nobody noticing. 🤯
 - Individuals "owned" individual code files, and there was no code review.
 - Men, the VP, insisted on personally QA'ing every change as they went into production.
 - Setting up a development environment would take 2-3 days and a bunch of manual clicking, so nobody kept their dev environments up-to-date, causing configurations wildly inconsistent with production.
