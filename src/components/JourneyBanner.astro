@@ -71,6 +71,7 @@ function labelSide(bar: typeof bars[0], index: number) {
 
 <div class="journey-banner">
   <h2 class="banner-title">Professional Journey</h2>
+  <p class="resume-link"><a href="/resume_yi_zhang.pdf" target="_blank">resume</a></p>
   <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="xMidYMid meet">
     <text class="axis-label" x={20} y={(paddingTop + timelineY) / 2} text-anchor="middle" transform={`rotate(-90, 20, ${(paddingTop + timelineY) / 2})`}>Scope & Responsibilities</text>
     <text class="axis-marker" x={20} y={paddingTop + 5} text-anchor="middle">+</text>
@@ -159,8 +160,14 @@ function labelSide(bar: typeof bars[0], index: number) {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     padding: 0 var(--spacing-lg);
-    margin-top: var(--spacing-lg);
+    margin-top: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
+  }
+
+  .resume-link {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
   }
 
   .banner-title {
