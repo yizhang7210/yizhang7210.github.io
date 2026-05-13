@@ -9,7 +9,7 @@ country: "Canada"
 startDate: "2017-04"
 endDate: "2018-09"
 ---
-Kooltra was a start-up with ~10 people and a founder/CEO who was a domain expert in Foreign Exchange (FX).
+Kooltra was a startup with ~10 people and a founder/CEO who was a domain expert in Foreign Exchange (FX).
 With my affinity for FX developed at OANDA, and a PM role on offer here, I was happy to dive in.
 
 ## The Work

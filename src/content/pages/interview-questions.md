@@ -8,7 +8,7 @@ Typically, I ask 1-2 different questions at the end of each interview to get som
 If I get to the offer stage, I ask to speak to the hiring manager again, and gather more of the answers.
 The compensation related questions usually go to the recruiter.
 
-Many of the questions are more geared towards start-ups, where public information is more limited, and variations are higher.
+Many of the questions are more geared towards startups, where public information is more limited, and variations are higher.
 
 ## Company & Financials
 - How many employees are there? How many on the technical team? What's the growth plan?
