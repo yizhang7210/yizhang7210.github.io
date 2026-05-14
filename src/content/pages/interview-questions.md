@@ -6,7 +6,7 @@ Usually I try to get as complete of a picture as possible when interviewing for 
 Some of the information can be found online, but many are more realistic to ask the interviewers.
 Typically, I ask 1-2 different questions at the end of each interview to get some coverage.
 If I get to the offer stage, I ask to speak to the hiring manager again, and gather more of the answers.
-The compensation related questions usually go to the recruiter.
+The questions about compensation usually go to the recruiter.
 
 Many of the questions are more geared towards startups, where public information is more limited, and variations are higher.
 
@@ -19,7 +19,7 @@ Many of the questions are more geared towards startups, where public information
 - Is there an exit strategy for the company (i.e. IPO)?
 
 For enterprise products:
-- What does a typical sales cycle look like? What are the distribution of deal sizes?
+- What does a typical sales cycle look like? What is the distribution of deal sizes?
 - Is there an implementation cycle & how long does it typically take?
 
 ## People & Organizations
@@ -55,16 +55,16 @@ For enterprise products:
 - For team members:
     - What do you think about the HM and company leadership in general?
     - What would be the top 3 things you think they can improve on?
-- For founders of very small company:
+- For founders of very small companies:
     - What is the key insight that led to you starting the company?
-    - What's your long term product vision?
+    - What's your long-term product vision?
     - What's your expected revenue model, i.e. where would the money come from?
 
 ## Performance & Compensation
 - How are performance reviews done here? At what frequency?
 - What is a typical promotion process?
 - Is there a sign-on bonus?
-- Is there re-location support?
+- Is there relocation support?
 - Is equity part of the compensation? If so:
     - Options or RSUs?
     - How many units & what percentage ownership is it notwithstanding dilution?
