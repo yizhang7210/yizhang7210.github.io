@@ -61,6 +61,8 @@ The only work that I felt a little more in control of was helping to reduce a nu
 </div>
 
 ## Exit
+After two full years on two different teams, still feeling like I couldn't contribute as much as I thought I was capable of, I took some time to explore external opportunities during my second parental leave. I got lucky again on the timing, and received an offer from Anthropic that was rather difficult to turn down, so I accepted it.
+
 At Meta, it's customary to write a "Badge Post" (posting a picture of the badge, hence the name), prior to departure. Here's the first part of what I wrote.
 
 <div class="role-card">
