@@ -6,17 +6,18 @@ export async function getStaticPaths() {
   const entries = await getCollection('companies');
   const sorted = [...entries].sort((a, b) => a.data.order - b.data.order);
   return sorted.map((entry, i) => {
+    const prevEntry = sorted[i - 1];
     const nextEntry = sorted[i + 1];
+    const prevSlug = prevEntry ? prevEntry.id.replace(/\.md$/, '').replace(/^\d+-/, '') : null;
     const nextSlug = nextEntry ? nextEntry.id.replace(/\.md$/, '').replace(/^\d+-/, '') : null;
-    const nextName = nextEntry ? nextEntry.data.name : null;
     return {
       params: { slug: entry.id.replace(/\.md$/, '').replace(/^\d+-/, '') },
-      props: { entry, nextSlug, nextName },
+      props: { entry, prevSlug, nextSlug },
     };
   });
 }
 
-const { entry, nextSlug, nextName } = Astro.props;
+const { entry, prevSlug, nextSlug } = Astro.props;
 const company = entry.data;
 const { Content } = await render(entry);
 
@@ -29,10 +30,7 @@ function formatDate(d: string) {
 ---
 
 <BaseLayout title={`${company.name} - Yi Zhang`}>
-  <nav class="page-nav">
-    <a href="/">&larr; Back</a>
-    {nextSlug && <a href={`/company/${nextSlug}/`}>Next &rarr;</a>}
-  </nav>
+  <a href="/">Home</a>
 
   <header class="company-header">
     <div class="header-top">
@@ -40,6 +38,10 @@ function formatDate(d: string) {
       <h1>{company.name}</h1>
     </div>
     <p class="meta">{company.city}, {company.country} &middot; {formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
+    <nav class="page-nav">
+      {prevSlug ? <a href={`/company/${prevSlug}/`}>&larr; Previous</a> : <span />}
+      {nextSlug ? <a href={`/company/${nextSlug}/`}>Next &rarr;</a> : <span />}
+    </nav>
   </header>
 
   <div class="content">
@@ -51,11 +53,12 @@ function formatDate(d: string) {
   .page-nav {
     display: flex;
     justify-content: space-between;
+    margin-top: var(--spacing-sm);
   }
 
   .company-header {
     margin: var(--spacing-lg) 0;
-    padding-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--color-border);
   }
 
