@@ -153,6 +153,7 @@ function labelSide(bar: typeof bars[0], index: number) {
       );
     })}
   </svg>
+  <p class="hint">Click/Tap on any company to read more</p>
 </div>
 
 <style>
@@ -168,6 +169,13 @@ function labelSide(bar: typeof bars[0], index: number) {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
+  }
+
+  .hint {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin: 0;
   }
 
   .banner-title {
@@ -204,6 +212,12 @@ function labelSide(bar: typeof bars[0], index: number) {
   .journey-bar rect {
     transition: filter 0.2s, opacity 0.2s;
     cursor: pointer;
+    animation: pulse 0.75s ease-in-out 2;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.05); }
   }
 
   .journey-bar:hover rect {
