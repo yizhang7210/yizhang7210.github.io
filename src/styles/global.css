@@ -58,6 +58,22 @@ a:hover {
   margin: 0 0 var(--spacing-sm);
 }
 
+.skill-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--spacing-sm);
+}
+
+.skill-pills span {
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+
 .highlight-card {
   background: #fefce8;
   border-left: 4px solid var(--color-accent-warm);

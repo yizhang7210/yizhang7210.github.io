@@ -21,6 +21,11 @@ While the logistics didn't work for me at the time, they had some projects I cou
 <div class="role-card">
 
 ### Software Engineer, Part-time (Apr 2018 – Aug 2018)
+
+<div class="skill-pills">
+<span>Node.js</span> <span>CSS</span> <span>React</span>
+</div>
+
 It was a short stint, but we did some good work.
 - I noticed that the generated `node_modules` folder was committed to source control, so I worked to clean it up.
 - We discovered a wave of spam attacks with bots signing up for free trials then abusing Canny's email notifications to do their free marketing, which Andrew and I mitigated.

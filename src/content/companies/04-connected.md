@@ -23,6 +23,11 @@ Funny enough, Connected was in the same building as OANDA, just one floor up.
 <div class="role-card">
 
 ### Software Engineer - Internal Project (May 2016 – Jan 2017)
+
+<div class="skill-pills">
+<span>JavaScript</span> <span>Node.js</span> <span>Redis</span> <span>Socket.IO</span> <span>MongoDB</span>
+</div>
+
 I was immediately put on the internal project, Olympus, building an ambitious Internet of Things (IoT) platform.
 
 It was mostly still greenfield, with the architecture set up by Daniel, a senior engineer, and lots of feature work to do.
@@ -39,6 +44,11 @@ Robert left to do his own business, and the engineers (including myself) were re
 <div class="role-card">
 
 ### Software Engineer - Client Projects (Jan 2017 – Mar 2017)
+
+<div class="skill-pills">
+<span>Java</span> <span>Spring Boot</span>
+</div>
+
 I joined a few fellow engineers to work on Loblaw Digital's Click-and-Collect order picking app backend.
 
 It was clear that it wasn't a good fit for me, as I didn't have the finesse to work onsite, directly with the clients.

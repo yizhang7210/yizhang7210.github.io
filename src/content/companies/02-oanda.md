@@ -21,6 +21,11 @@ I'm grateful the team at OANDA took a chance on me as a new grad, so I signed up
 <div class="role-card">
 
 ### Software Engineer (Sep 2015 – Apr 2016)
+
+<div class="skill-pills">
+<span>Java</span> <span>REST</span> <span>Git</span> <span>Jenkins</span> <span>Agile</span>
+</div>
+
 OANDA had just gone through an "Agile transformation" before I joined, and I landed on the team responsible for all the customer interfaces (i.e. desktop GUI, REST API, MT4 integration).
 
 After a few weeks of onboarding, I was a major contributor to a UI refresh project for the desktop GUI written in **Java**.

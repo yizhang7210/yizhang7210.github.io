@@ -24,6 +24,11 @@ from home. But these felt like worthy sacrifices at the time.
 <div class="role-card">
 
 ### Software Engineer (Apr 2016 – May 2016)
+
+<div class="skill-pills">
+<span>Java</span> <span>Git</span>
+</div>
+
 I only lasted 3 weeks at the company. There were so many red flags from day 1.
 
 Here are a few that stood out:

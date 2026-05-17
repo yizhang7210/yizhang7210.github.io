@@ -21,6 +21,11 @@ To maximize my RSU grant — which was calculated based on a price window just b
 <div class="role-card">
 
 ### Software Engineer - Wearables Productivity & Infra (Feb 2024 – Mar 2025)
+
+<div class="skill-pills">
+<span>Python</span> <span>Hack</span> <span>Buck</span> <span>JSON</span>
+</div>
+
 In true Meta fashion, the team I matched with went through a re-org right around the time I joined, and my official manager changed three times in my first month.
 When the dust settled, I was happy to land on the team maintaining the CI/CD pipeline for Meta's Wearables products (e.g. the RayBan Meta glasses and more), as I had worked on internal tooling and was passionate about developer experience.
 
@@ -39,6 +44,11 @@ Despite getting an "Exceeding Expectations" rating at year end, I wanted to work
 <div class="role-card">
 
 ### Software Engineer - Facebook Search (Mar 2025 – May 2026)
+
+<div class="skill-pills">
+<span>C++</span> <span>Hack</span> <span>Everything else is custom</span>
+</div>
+
 Facebook Search was going through a phase of rapid growth, as an ambitious proposal — which included a good amount of headcount — had just been approved and funded by leadership.
 I spoke to the managers of a few teams here, and felt excited about the opportunity on the Retrieval team, where the work was focused on picking more **relevant** & **engaging** results from Facebook's huge inventory of posts based on the search term.
 

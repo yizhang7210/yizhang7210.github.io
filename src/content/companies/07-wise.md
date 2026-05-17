@@ -17,6 +17,11 @@ I had a smooth interview process with them and resonated with their ambitious pl
 <div class="role-card">
 
 ### Software Engineer - US Expansion (Oct 2018 – Jan 2019)
+
+<div class="skill-pills">
+<span>Java</span> <span>Spring Boot</span> <span>PostgreSQL</span> <span>REST</span>
+</div>
+
 This was my first job at the senior engineer level. Partly because of the elevated expectations, I had a difficult onboarding.
 - TransferWise had by far the largest codebase I'd worked with by that point.
 - The company's technology was going through some rapid changes, and documentation had not caught up.
@@ -28,6 +33,11 @@ Despite the challenges, I got along well with the close-knit NYC office crew, an
 <div class="role-card">
 
 ### Software Engineer - Engineering Experience (Jan 2019 – Oct 2020)
+
+<div class="skill-pills">
+<span>Java</span> <span>Spring Boot</span> <span>Kubernetes</span> <span>Microservices</span> <span>Python</span> <span>Grafana</span> <span>Prometheus</span>
+</div>
+
 The company was migrating from a rented data center to the cloud, from monolith to microservices, and onboarding to Kubernetes (k8s) as the orchestration layer.
 As a result, the development process was in constant flux, and was a major source of frustration for much of the engineering org, myself included.
 

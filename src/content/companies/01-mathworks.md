@@ -20,6 +20,11 @@ I only secured interviews with two UK-based companies, and was fortunate to rece
 <div class="role-card">
 
 ### Software Engineer Intern (Jul 2013 – Sep 2013)
+
+<div class="skill-pills">
+<span>MATLAB</span> <span>C++</span> <span>Simulink</span> <span>AUTOSAR</span> <span>CVS</span>
+</div>
+
 I worked on the Simulink team, specifically on the AUTOSAR (Automotive Open System Architecture) integration, making it easier to sync models between Simulink & AUTOSAR's authoring tool.
 
 My feature supporting the data dictionary in Simulink ended up in the 2014a release.

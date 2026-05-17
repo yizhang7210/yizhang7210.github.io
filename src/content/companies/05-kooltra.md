@@ -18,6 +18,10 @@ With my affinity for FX developed at OANDA, and a PM role on offer here, I was h
 
 ### Product Manager - Being the fixer (Apr 2017 – Oct 2017)
 
+<div class="skill-pills">
+<span>Salesforce</span> <span>Apex</span> <span>VisualForce</span> <span>Git</span>
+</div>
+
 #### Engineering
 The first thing I realized walking into Kooltra was that the people were smart, but literally everyone was doing their jobs for the first time - from the CEO, to the VP, to basically everyone on Engineering.
 
@@ -45,6 +49,10 @@ I spent a lot of time with Adam in his office, debating & negotiating how to bui
 <div class="role-card">
 
 ### Software Engineer - Back on track (Oct 2017 – Sep 2018)
+
+<div class="skill-pills">
+<span>Salesforce</span> <span>Apex</span> <span>VisualForce</span> <span>Git</span>
+</div>
 
 Everything changed for the better when Ryan joined.
 
