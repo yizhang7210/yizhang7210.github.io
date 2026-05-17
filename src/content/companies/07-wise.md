@@ -63,4 +63,4 @@ This is the first job where I had meaningful interactions with too many great pe
 - [Jose](https://www.linkedin.com/in/igalarzab/) was an amazing engineering leader who taught me so much about modern distributed systems and k8s.
 - [Andrei](https://www.linkedin.com/in/andrei-tognolo/) was inspirational in his vision of the Engineering Experience team, and a good manager.
 - [Haoyuan](https://www.linkedin.com/in/haoyuan-jiang-6a71ab96/) was a great host for my team when we visited Singapore, and we later reunited again in the US.
-- [Chen](https://www.linkedin.com/in/chenwang/), [Yurii](https://www.linkedin.com/in/mcm69/), [Taras](https://www.linkedin.com/in/tburko/), and [Dimitri](https://www.linkedin.com/in/dmitri-suhhomjatnikov-b8639154/) were all amazing engineers I still aspire to learn from.
+- [Chen](https://www.linkedin.com/in/chenwang/), [Yurii](https://www.linkedin.com/in/mcm69/), [Taras](https://www.linkedin.com/in/tburko/), [Helin](https://www.linkedin.com/in/helinece/), and [Dimitri](https://www.linkedin.com/in/dmitri-suhhomjatnikov-b8639154/) were all amazing engineers I still aspire to learn from.
