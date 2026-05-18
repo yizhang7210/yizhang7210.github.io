@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import { getSiteConfig } from '../config';
+const config = await getSiteConfig();
 
 const entries = await getCollection('companies');
 const sorted = entries.map(e => ({ ...e.data, slug: e.id.replace(/\.md$/, '').replace(/^\d+-/, '') })).sort((a, b) => a.order - b.order);
@@ -26,13 +28,8 @@ function dateToX(d: string) {
 const timelineY = svgHeight - paddingBottom;
 const chartHeight = timelineY - paddingTop - barHeight;
 
-const countryColors: Record<string, string> = {
-  'Canada': '#be185d',
-  'USA': '#2563eb',
-  'UK': '#059669',
-  'Remote': '#7c3aed',
-};
-const defaultColor = '#9ca3af';
+const countryColors: Record<string, string> = config.countryColors;
+const defaultColor = config.defaultCountryColor;
 
 const countries = [...new Set(sorted.map((c) => c.country))];
 
@@ -71,7 +68,7 @@ function labelSide(bar: typeof bars[0], index: number) {
 
 <div class="journey-banner">
   <h2 class="banner-title">Professional Journey</h2>
-  <p class="resume-link"><a href="https://www.linkedin.com/in/yizhang7210/" target="_blank">LinkedIn</a> · <a href="/resume_yi_zhang.pdf" target="_blank">resume</a> · <a href="https://www.pseudofreedom.com/" target="_blank">engineering blog</a></p>
+  <p class="resume-link">{config.links.map((link, i) => <>{i > 0 && ' · '}<a href={link.url} target="_blank">{link.label}</a></>)}</p>
   <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="xMidYMid meet">
     <text class="axis-label" x={20} y={(paddingTop + timelineY) / 2} text-anchor="middle" transform={`rotate(-90, 20, ${(paddingTop + timelineY) / 2})`}>Scope & Responsibilities</text>
     <text class="axis-marker" x={20} y={paddingTop + 5} text-anchor="middle">+</text>

@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { getSiteConfig } from '../config';
+const config = await getSiteConfig();
 
 const entries = await getCollection('pages');
 const entry = entries.find(e => e.id.includes('interview-questions'));
@@ -8,7 +10,7 @@ const page = entry!.data;
 const { Content } = await render(entry!);
 ---
 
-<BaseLayout title={`${page.title} - Yi Zhang`}>
+<BaseLayout title={`${page.title} - ${config.name}`}>
   <a href="/">&larr; Back</a>
 
   <header class="page-header">

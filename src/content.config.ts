@@ -24,4 +24,21 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { companies, pages };
+const about = defineCollection({
+  type: 'content',
+  schema: z.object({
+    name: z.string(),
+    subtitle: z.string(),
+    links: z.array(z.object({
+      label: z.string(),
+      url: z.string(),
+    })),
+    countryColors: z.record(z.string()),
+    defaultCountryColor: z.string(),
+    analytics: z.object({
+      goatcounter: z.string().optional(),
+    }).optional(),
+  }),
+});
+
+export const collections = { companies, pages, about };
