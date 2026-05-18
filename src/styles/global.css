@@ -88,7 +88,6 @@ a:hover {
   font-weight: 600;
   color: var(--color-primary);
   font-size: 0.85rem;
-  list-style: none;
 }
 
 .highlight-card summary::before {
