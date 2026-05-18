@@ -73,6 +73,7 @@ a:hover {
   border-radius: 12px;
 }
 
+
 .highlight-card {
   background: #fefce8;
   border-left: 4px solid var(--color-accent-warm);
@@ -87,22 +88,10 @@ a:hover {
   font-weight: 600;
   color: var(--color-primary);
   font-size: 0.85rem;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .highlight-card summary::before {
-  content: '▸';
-  font-size: 1.6rem;
-  display: inline-block;
-  line-height: 0;
-  transform: translateY(-3px);
-}
-
-.highlight-card[open] summary::before {
-  content: '▾';
+  content: '🎤 ';
 }
 
 .highlight-card[open] summary {
@@ -112,3 +101,5 @@ a:hover {
 .highlight-card p {
   margin: var(--spacing-sm) 0 0;
 }
+
+
