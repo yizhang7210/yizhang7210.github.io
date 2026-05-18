@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getSiteConfig } from '../config';
+const config = await getSiteConfig();
+
+const entries = await getCollection('pages');
+const entry = entries.find(e => e.id.includes('interview-questions'));
+const page = entry!.data;
+const { Content } = await render(entry!);
+---
+
+<BaseLayout title={`${page.title} - ${config.name}`}>
+  <a href="/">&larr; Back</a>
+
+  <header class="page-header">
+    <h1>{page.title}</h1>
+    {page.subtitle && <p class="subtitle">{page.subtitle}</p>}
+  </header>
+
+  <div class="content">
+    <Content />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header {
+    margin: var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-header h1 {
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    margin: var(--spacing-sm) 0 0;
+  }
+
+  .content {
+    margin-bottom: var(--spacing-xl);
+  }
+</style>

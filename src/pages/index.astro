@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import JourneyBanner from '../components/JourneyBanner.astro';
+import { getSiteConfig } from '../config';
+const config = await getSiteConfig();
+---
+
+<BaseLayout title={`${config.name} - Professional Journey`}>
+  <h1>{config.name}</h1>
+  <p class="subtitle">{config.subtitle}</p>
+  <JourneyBanner />
+  <h2 class="section-title">Resources</h2>
+  <ul class="resources">
+    <li><a href="/interview-questions/">Interview Questions</a> — Questions I ask companies during the interview process</li>
+  </ul>
+</BaseLayout>
+
+<style>
+  h1 {
+    color: var(--color-primary);
+    margin-bottom: 0;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    margin: var(--spacing-sm) 0 0;
+  }
+
+  .section-title {
+    color: var(--color-primary);
+  }
+
+  .resources {
+    line-height: 2;
+  }
+</style>

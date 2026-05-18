@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { getSiteConfig } from '../../config';
+const config = await getSiteConfig();
+
+export async function getStaticPaths() {
+  const entries = await getCollection('companies');
+  const sorted = [...entries].sort((a, b) => a.data.order - b.data.order);
+  return sorted.map((entry, i) => {
+    const prevEntry = sorted[i - 1];
+    const nextEntry = sorted[i + 1];
+    const prevSlug = prevEntry ? prevEntry.id.replace(/\.md$/, '').replace(/^\d+-/, '') : null;
+    const nextSlug = nextEntry ? nextEntry.id.replace(/\.md$/, '').replace(/^\d+-/, '') : null;
+    return {
+      params: { slug: entry.id.replace(/\.md$/, '').replace(/^\d+-/, '') },
+      props: { entry, prevSlug, nextSlug },
+    };
+  });
+}
+
+const { entry, prevSlug, nextSlug } = Astro.props;
+const company = entry.data;
+const { Content } = await render(entry);
+
+function formatDate(d: string) {
+  if (d === 'present') return 'Present';
+  const [year, month] = d.split('-');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[parseInt(month) - 1]} ${year}`;
+}
+---
+
+<BaseLayout title={`${company.name} - ${config.name}`}>
+  <a href="/">Home</a>
+
+  <header class="company-header">
+    <div class="header-top">
+      <img src={company.logo} alt={`${company.name} logo`} class="company-logo" />
+      <h1>{company.name}</h1>
+    </div>
+    <p class="meta">{company.city}, {company.country} &middot; {formatDate(company.startDate)} – {formatDate(company.endDate)}</p>
+    <nav class="page-nav">
+      {prevSlug ? <a href={`/company/${prevSlug}/`}>&larr; Previous</a> : <span />}
+      {nextSlug ? <a href={`/company/${nextSlug}/`}>Next &rarr;</a> : <span />}
+    </nav>
+  </header>
+
+  <div class="content">
+    <Content />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+  }
+
+  .company-header {
+    margin: var(--spacing-lg) 0;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .company-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+  }
+
+  .company-header h1 {
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .meta {
+    color: var(--color-text-muted);
+    margin: var(--spacing-sm) 0 0;
+  }
+
+  .content {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .section {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .section h2 {
+    color: var(--color-primary);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .dates {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: var(--spacing-sm) 0;
+  }
+</style>
