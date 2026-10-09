@@ -499,6 +499,19 @@ const yearText = (s: Stone) =>
 const shortName = (name: string) => name.replace(/\s*\(.*?\)\s*/g, '').replace(/,.*$/, '').trim();
 
 const countries = [...new Set(sorted.map((c) => c.country))];
+
+// Legend dots are drawn as tiny stones: the stones' fill, lit at the top-left and falling into
+// shade at the bottom-right, the way the stone texture's lighting renders the real ones.
+function legendDotStyle(country: string) {
+  const c = hexToRgb(colorFor(country));
+  const b = hexToRgb(look.base);
+  const fill = [c.r, c.g, c.b].map((v, i) => v * look.tint + [b.r, b.g, b.b][i] * (1 - look.tint));
+  const rgb = (k: (v: number) => number) => `rgb(${fill.map((v) => Math.round(k(v))).join(', ')})`;
+  const lit = rgb((v) => v + (255 - v) * 0.22);
+  const mid = rgb((v) => v * 1.06);
+  const shade = rgb((v) => v * 0.8);
+  return `background:radial-gradient(circle at 35% 30%, ${lit} 0%, ${mid} 45%, ${shade} 100%);border:1px solid rgba(40, 38, 32, 0.25);width:15px;height:15px;border-radius:50%;display:inline-block;`;
+}
 ---
 
 <div class="journey-banner">
@@ -685,7 +698,7 @@ const countries = [...new Set(sorted.map((c) => c.country))];
     <span class="legend-countries">
       {countries.map((country) => (
         <span class="legend-chip">
-          <span class="legend-dot" style={`background:${stoneFill(colorFor(country))};border:1.5px solid ${stoneEdge(colorFor(country))};width:15px;height:15px;border-radius:50%;display:inline-block;`}></span>
+          <span class="legend-dot" style={legendDotStyle(country)}></span>
           <span>{country}</span>
         </span>
       ))}
