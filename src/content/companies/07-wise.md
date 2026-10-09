@@ -1,5 +1,5 @@
 ---
-name: "TransferWise (now Wise)"
+name: "Wise (formerly TransferWise)"
 logo: "/logos/wise.png"
 order: 7
 rating: 7

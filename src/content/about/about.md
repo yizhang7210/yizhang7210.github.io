@@ -9,10 +9,10 @@ links:
   - label: "engineering blog"
     url: "https://www.pseudofreedom.com/"
 countryColors:
-  Canada: "#be185d"
-  USA: "#2563eb"
-  UK: "#059669"
-  Remote: "#7c3aed"
+  Canada: "#d6342b"
+  USA: "#2b3648"
+  UK: "#047857"
+  Remote: "#6d28d9"
 defaultCountryColor: "#9ca3af"
 analytics:
   goatcounter: "https://yizhang7210.goatcounter.com/count"

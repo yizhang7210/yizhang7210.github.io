@@ -1,156 +1,697 @@
 ---
 import { getCollection } from 'astro:content';
 import { getSiteConfig } from '../config';
+import { stoneLook as look } from './stoneLook';
 const config = await getSiteConfig();
+const uid = 'jb'; // prefix for this banner's SVG ids
 
 const entries = await getCollection('companies');
-const sorted = entries.map(e => ({ ...e.data, slug: e.id.replace(/\.md$/, '').replace(/^\d+-/, '') })).sort((a, b) => a.order - b.order);
-const svgWidth = 1200;
-const svgHeight = 600;
-const paddingX = 60;
-const paddingTop = 50;
-const paddingBottom = 50;
-const barHeight = 24;
-const parallelOffset = 0;
-const minBarWidth = 14;
+const sorted = entries
+  .map((e) => ({ ...e.data, slug: e.id.replace(/\.md$/, '').replace(/^\d+-/, '') }))
+  .sort((a, b) => a.order - b.order);
 
-const startYear = Math.min(...sorted.map((c) => parseInt(c.startDate.split('-')[0])));
-const endYear = new Date().getFullYear() + 1;
-const totalYears = endYear - startYear;
-
-function dateToX(d: string) {
-  if (d === 'present') return paddingX + (svgWidth - 2 * paddingX);
-  const [year, month] = d.split('-').map(Number);
-  const yearFrac = (year - startYear) + (month - 1) / 12;
-  return paddingX + (yearFrac / totalYears) * (svgWidth - 2 * paddingX);
-}
-
-const timelineY = svgHeight - paddingBottom;
-const chartHeight = timelineY - paddingTop - barHeight;
+const svgWidth = 1000;
+const svgHeight = 1040;
+// White margin around the garden so its ragged outline is never cut flat by the canvas edge.
+const pad = 150;
+const view = { x: -pad, y: -pad, w: svgWidth + pad * 2, h: svgHeight + pad * 2 };
 
 const countryColors: Record<string, string> = config.countryColors;
 const defaultColor = config.defaultCountryColor;
+const colorFor = (c: string) => countryColors[c] || defaultColor;
 
-const countries = [...new Set(sorted.map((c) => c.country))];
+// --- Colour helpers ---
+function hexToRgb(hex: string) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+  return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+}
 
-const bars = sorted.map((company) => {
-  const x1 = dateToX(company.startDate);
-  const x2 = dateToX(company.endDate);
-  const rawWidth = x2 - x1;
-  const width = Math.max(rawWidth, minBarWidth);
-  const isParallel = company.track === 'parallel';
-  const barY = paddingTop + ((10 - company.scope) / 9) * chartHeight;
-  const y = isParallel ? barY + parallelOffset : barY;
-  const color = countryColors[company.country] || defaultColor;
+// Mix two colours: amt = 0 keeps `hex`, amt = 1 gives `other`.
+function mix(hex: string, other: string, amt: number) {
+  const a = hexToRgb(hex);
+  const b = hexToRgb(other);
+  const m = (x: number, y: number) => Math.round(x + (y - x) * amt);
+  return `rgb(${m(a.r, b.r)}, ${m(a.g, b.g)}, ${m(a.b, b.b)})`;
+}
+// Real stone is mostly grey — the country colour is just a mineral cast through it.
+const stoneFill = (c: string) => mix(c, look.base, 1 - look.tint);
+const stoneEdge = (c: string) => mix(c, '#4a4740', 0.72);
+const nameFill = look.nameFill;
+
+// Every stone shares one shape and size; scope is shown by the flowers growing round it.
+const scopes = sorted.map((c) => c.scope);
+const minScope = Math.min(...scopes);
+const maxScope = Math.max(...scopes);
+const scopeT = (scope: number) => (scope - minScope) / (maxScope - minScope); // 0 = narrowest role, 1 = broadest
+const stoneRoundness = 0.45;
+function shapeFor(scale: number) {
+  const r = 58 * scale; // radius of the equal-area circle
+  const aspect = 0.62 + 0.36 * stoneRoundness; // height / width
+  return { rx: r / Math.sqrt(aspect), ry: r * Math.sqrt(aspect) };
+}
+const ryRatio = 0.74; // ghost stones
+
+// --- Deterministic randomness so the garden is stable across builds ---
+function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry32(20260408);
+const jitter = (amp: number) => (rand() - 0.5) * 2 * amp;
+
+type Pt = { x: number; y: number };
+
+// Catmull-Rom control points for segment i of an open curve.
+function segmentControls(pts: Pt[], i: number) {
+  const p0 = pts[i - 1] || pts[i];
+  const p1 = pts[i];
+  const p2 = pts[i + 1];
+  const p3 = pts[i + 2] || p2;
+  return {
+    p1,
+    c1: { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 },
+    c2: { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 },
+    p2,
+  };
+}
+
+// Smooth open path through a set of points (Catmull-Rom -> cubic bezier).
+function smoothPath(pts: Pt[]) {
+  if (pts.length < 2) return '';
+  let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const { c1, c2, p2 } = segmentControls(pts, i);
+    d += ` C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return d;
+}
+
+// Closed rock outline around (cx, cy): a jittered polygon with lightly rounded corners, so it
+// reads as chipped and faceted. `roundness` (0–1) adds sides, evens them out and softens the
+// corners until the outline is nearly a circle; without it you get the default chipped rock.
+function blobPath(cx: number, cy: number, rx: number, ry: number, roundness?: number) {
+  const t = roundness ?? -1;
+  const n = t < 0 ? 9 : Math.round(7 + 6 * t);
+  const angleJitter = t < 0 ? 0.28 : 0.32 * (1 - t) + 0.04;
+  const radiusJitter = t < 0 ? 0.1 : 0.13 * (1 - t) + 0.025;
+  const offset = rand() * Math.PI * 2;
+  const pts = Array.from({ length: n }, (_, i) => {
+    const ang = offset + ((i + jitter(angleJitter)) / n) * Math.PI * 2;
+    const noise = 1 + jitter(radiusJitter);
+    return { x: cx + Math.cos(ang) * rx * noise, y: cy + Math.sin(ang) * ry * noise };
+  });
+  const k = t < 0 ? 14 : 15 - 9.5 * t; // larger = tighter corners (Catmull-Rom uses 6)
+  let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n];
+    const p1 = pts[i];
+    const p2 = pts[(i + 1) % n];
+    const p3 = pts[(i + 2) % n];
+    const cp1x = p1.x + (p2.x - p0.x) / k;
+    const cp1y = p1.y + (p2.y - p0.y) / k;
+    const cp2x = p2.x - (p3.x - p1.x) / k;
+    const cp2y = p2.y - (p3.y - p1.y) / k;
+    d += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return d + ' Z';
+}
+
+// --- The spine: a question-mark hook. Starts bottom-left, runs right, climbs the right side,
+// then curls back left over the top and trails off into the future. ---
+const spine: Pt[] = [
+  { x: 80, y: 935 },
+  { x: 270, y: 918 },
+  { x: 475, y: 872 },
+  { x: 665, y: 778 },
+  { x: 785, y: 625 },
+  { x: 798, y: 455 },
+  { x: 710, y: 322 },
+  { x: 560, y: 248 },
+  { x: 405, y: 218 },
+  { x: 290, y: 168 },
+  { x: 250, y: 70 },
+  { x: 245, y: 0 },
+];
+
+// Densely sample the spine so we can walk along it by arc length.
+const dense: Pt[] = [];
+for (let i = 0; i < spine.length - 1; i++) {
+  const { p1, c1, c2, p2 } = segmentControls(spine, i);
+  for (let k = 0; k < 80; k++) {
+    const t = k / 80;
+    const u = 1 - t;
+    dense.push({
+      x: u * u * u * p1.x + 3 * u * u * t * c1.x + 3 * u * t * t * c2.x + t * t * t * p2.x,
+      y: u * u * u * p1.y + 3 * u * u * t * c1.y + 3 * u * t * t * c2.y + t * t * t * p2.y,
+    });
+  }
+}
+dense.push(spine[spine.length - 1]);
+const cum = [0];
+for (let i = 1; i < dense.length; i++) cum.push(cum[i - 1] + Math.hypot(dense[i].x - dense[i - 1].x, dense[i].y - dense[i - 1].y));
+const spineLength = cum[cum.length - 1];
+
+// Interior of the hook — used to decide which side of the path is "outside".
+const hookCentre = { x: 480, y: 600 };
+
+function pointAt(s: number) {
+  const target = Math.min(Math.max(s, 0), spineLength);
+  let i = 1;
+  while (i < cum.length - 1 && cum[i] < target) i++;
+  const a = dense[i - 1];
+  const b = dense[i];
+  const seg = cum[i] - cum[i - 1] || 1;
+  const t = (target - cum[i - 1]) / seg;
+  const x = a.x + (b.x - a.x) * t;
+  const y = a.y + (b.y - a.y) * t;
+  const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+  const tx = (b.x - a.x) / len;
+  const ty = (b.y - a.y) / len;
+  // Outward normal: whichever perpendicular points away from the hook's interior.
+  let nx = ty;
+  let ny = -tx;
+  if (nx * (x - hookCentre.x) + ny * (y - hookCentre.y) < 0) {
+    nx = -nx;
+    ny = -ny;
+  }
+  return { x, y, tx, ty, nx, ny };
+}
+
+// Radius of an ellipse measured along a direction — lets stones pack evenly as the path turns.
+const radiusAlong = (rx: number, ry: number, dx: number, dy: number) => (rx * ry) / Math.hypot(ry * dx, rx * dy);
+
+type Stone = {
+  company: (typeof sorted)[number];
+  x: number;
+  y: number;
+  rx: number;
+  ry: number;
+  nx: number;
+  ny: number;
+  outline: string;
+  fill: string;
+  edge: string;
+  isParallel: boolean;
+  fullStars: number;
+  halfStar: boolean;
+  startYear: number;
+  endYear: number | null;
+};
+
+function makeStone(company: (typeof sorted)[number], x: number, y: number, rx: number, ry: number, nx: number, ny: number, isParallel = false): Stone {
+  const color = colorFor(company.country);
   const stars = company.rating / 2;
-  const fullStars = Math.floor(stars);
-  const halfStar = stars % 1 >= 0.5;
-  return { ...company, x1, width, y, barY, isParallel, color, fullStars, halfStar };
+  return {
+    company,
+    x,
+    y,
+    rx,
+    ry,
+    nx,
+    ny,
+    outline: blobPath(x, y, rx, ry, stoneRoundness),
+    fill: stoneFill(color),
+    edge: stoneEdge(color),
+    isParallel,
+    fullStars: Math.floor(stars),
+    halfStar: stars % 1 >= 0.5,
+    startYear: parseInt(company.startDate.split('-')[0]),
+    endYear: company.endDate === 'present' ? null : parseInt(company.endDate.split('-')[0]),
+  };
+}
+
+// --- Walk the stones along the spine, nearly touching, like the stepping stones of a garden ---
+const mainCompanies = sorted.filter((c) => c.track !== 'parallel');
+const stoneGap = 46;
+const startMargin = 18;
+const stoneSpanFraction = 0.78; // the rest of the spine is left for the future
+
+function walk(scale: number) {
+  const placed: { s: number; rx: number; ry: number }[] = [];
+  let s = 0;
+  mainCompanies.forEach((company, idx) => {
+    const { rx, ry } = shapeFor(scale);
+    if (idx === 0) {
+      const p = pointAt(0);
+      s = startMargin + radiusAlong(rx, ry, p.tx, p.ty);
+    } else {
+      // Step along the spine until the straight-line gap between the two stones is clear —
+      // arc length alone would let stones crowd each other where the path bends.
+      const prev = placed[idx - 1];
+      const a = pointAt(prev.s);
+      s = prev.s;
+      for (;;) {
+        s += 2;
+        const b = pointAt(s);
+        const d = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+        const ux = (b.x - a.x) / d;
+        const uy = (b.y - a.y) / d;
+        if (d >= radiusAlong(prev.rx, prev.ry, ux, uy) + stoneGap + radiusAlong(rx, ry, ux, uy) || s >= spineLength) break;
+      }
+    }
+    placed.push({ s, rx, ry });
+  });
+  const last = placed[placed.length - 1];
+  const lp = pointAt(last.s);
+  return { placed, end: last.s + radiusAlong(last.rx, last.ry, lp.tx, lp.ty) };
+}
+
+// Scale the stones so the run of them fills the intended share of the spine.
+const unit = walk(1);
+const gapTotal = startMargin + stoneGap * (mainCompanies.length - 1);
+const stoneScale = (spineLength * stoneSpanFraction - gapTotal) / (unit.end - gapTotal);
+const layout = walk(stoneScale);
+
+const mainStones: Stone[] = mainCompanies.map((company, idx) => {
+  const { s, rx, ry } = layout.placed[idx];
+  const p = pointAt(s);
+  const sway = (idx % 2 === 0 ? 1 : -1) * 6 + jitter(3); // gentle stagger either side of the path
+  return makeStone(company, p.x + p.nx * sway, p.y + p.ny * sway, rx, ry, p.nx, p.ny);
 });
 
-const yearMarks = Array.from({ length: totalYears + 1 }, (_, i) => ({
-  year: startYear + i,
-  x: paddingX + (i / totalYears) * (svgWidth - 2 * paddingX),
-}));
+const pathD = smoothPath(spine);
 
-const labelBelow = new Set([]);
-const labelAbove = new Set(['unit21']);
+// Parallel roles sit just inside the hook, beside their sequential neighbours.
+const parallelStones: Stone[] = sorted
+  .filter((c) => c.track === 'parallel')
+  .map((company) => {
+    const prev = mainStones.filter((s) => s.company.order < company.order).pop() || mainStones[0];
+    const next = mainStones.find((s) => s.company.order > company.order) || prev;
+    const nx = (prev.nx + next.nx) / 2;
+    const ny = (prev.ny + next.ny) / 2;
+    const { rx, ry } = shapeFor(stoneScale * 0.8);
+    const reach = Math.max(prev.rx, next.rx) + rx + 66;
+    return makeStone(company, (prev.x + next.x) / 2 - nx * reach, (prev.y + next.y) / 2 - ny * reach, rx, ry, 0, 1, true);
+  });
 
-function labelSide(bar: typeof bars[0], index: number) {
-  if (labelAbove.has(bar.slug)) return 'above';
-  if (labelBelow.has(bar.slug)) return 'below';
-  if (bar.y - paddingTop < 60) return 'below';
-  if (index > 0 && Math.abs(bars[index - 1].y - bar.y) < 40
-      && bar.x1 - bars[index - 1].x1 < 120) return 'below';
-  return 'above';
+const branches = parallelStones.map((p) => {
+  const anchor = mainStones.filter((s) => s.company.order < p.company.order).pop() || mainStones[0];
+  return { x1: anchor.x, y1: anchor.y, x2: p.x, y2: p.y };
+});
+
+const allStones = [...mainStones, ...parallelStones];
+
+// --- What's next: one more stone, marked "?", on the next stepping spot after today ---
+const lastPlaced = layout.placed[layout.placed.length - 1];
+const nextShape = shapeFor(stoneScale);
+let nextS = lastPlaced.s;
+{
+  const a = pointAt(lastPlaced.s);
+  for (;;) {
+    nextS += 2;
+    const b = pointAt(nextS);
+    const d = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+    const ux = (b.x - a.x) / d;
+    const uy = (b.y - a.y) / d;
+    if (d >= radiusAlong(lastPlaced.rx, lastPlaced.ry, ux, uy) + stoneGap + radiusAlong(nextShape.rx, nextShape.ry, ux, uy) || nextS >= spineLength) break;
+  }
 }
+const nextStone = (() => {
+  const p = pointAt(nextS);
+  const sway = (mainStones.length % 2 === 0 ? 1 : -1) * 6;
+  const x = p.x + p.nx * sway;
+  const y = p.y + p.ny * sway;
+  const color = colorFor('USA');
+  return { x, y, ...nextShape, outline: blobPath(x, y, nextShape.rx, nextShape.ry, stoneRoundness), fill: stoneFill(color), edge: stoneEdge(color) };
+})();
+const nextEnd = nextS + radiusAlong(nextShape.rx, nextShape.ry, pointAt(nextS).tx, pointAt(nextS).ty);
+
+// --- Past that the spine carries on, fading out, with a couple of faint future steps ---
+const ghostStones = [
+  { s: nextEnd + stoneGap + 34, rx: 34, opacity: 0.45 },
+  { s: nextEnd + stoneGap * 2 + 92, rx: 26, opacity: 0.28 },
+].map((g) => {
+  const p = pointAt(g.s);
+  const ry = g.rx * ryRatio;
+  return { x: p.x, y: p.y, rx: g.rx, ry, opacity: g.opacity, outline: blobPath(p.x, p.y, g.rx, ry) };
+});
+const fadeFrom = pointAt(nextEnd);
+const fadeTo = spine[spine.length - 1];
+
+// --- Decorative greenery, scattered deterministically ---
+// Each bush is a cluster of leaf masses, dark at the base and lit toward the top-left;
+// the foliage filter roughens the edges into leaves.
+type Circle = { cx: number; cy: number; r: number; fill: string };
+const leafShades = ['#3a5f2a', '#4a7834', '#5d9040', '#74a94f', '#93c26a'];
+function bush(cx: number, cy: number, scale: number): Circle[] {
+  const base = 30 * scale;
+  const blobs: Circle[] = [];
+  leafShades.forEach((fill, layer) => {
+    const lift = layer * 0.16; // lighter layers sit higher and further toward the light
+    const count = 7 - layer;
+    for (let i = 0; i < count; i++) {
+      const ang = rand() * Math.PI * 2;
+      const dist = rand() * (1 - layer * 0.12);
+      blobs.push({
+        cx: cx + Math.cos(ang) * dist * base * 1.1 - lift * base * 0.6,
+        cy: cy + Math.sin(ang) * dist * base * 0.8 - lift * base,
+        r: base * (0.55 - layer * 0.05 + rand() * 0.2),
+        fill,
+      });
+    }
+  });
+  return blobs;
+}
+
+const bushAnchors = [
+  // back layer: around the top of the hook
+  { x: 185, y: 92, s: 1.1 },
+  { x: 430, y: 80, s: 0.95 },
+  { x: 215, y: 255, s: 1.1 },
+  { x: 335, y: 365, s: 0.95 },
+  { x: 870, y: 255, s: 0.9 },
+  // front layer: the big hedge filling the inside of the hook, and the foreground
+  { x: 120, y: 615, s: 2.5 },
+  { x: 270, y: 585, s: 3.1 },
+  { x: 440, y: 640, s: 2.4 },
+  { x: 220, y: 730, s: 2.0 },
+  { x: 345, y: 725, s: 1.95 },
+  { x: 610, y: 990, s: 1.0 },
+  { x: 760, y: 975, s: 1.15 },
+  { x: 860, y: 880, s: 0.85 },
+];
+const bushes = bushAnchors.map((b) => ({ x: b.x, y: b.y, s: b.s, circles: bush(b.x + jitter(10), b.y + jitter(8), b.s) }));
+const backBushCount = 5;
+
+// Scope & responsibility: a ring of red flowers growing right round the rim of each stone. A narrow role
+// gets a single flower; the broadest gets a full ring. The ring starts on the stone's inner side.
+type Flower = { cx: number; cy: number; rot: number; size: number };
+const flowerPetal = '#e0443a';
+const flowerCentre = '#f6c445';
+const flowers: Flower[] = allStones.flatMap((s) => {
+  const t = scopeT(s.company.scope);
+  const count = 1 + Math.round(t * 15);
+  const inward = Math.atan2(hookCentre.y - s.y, hookCentre.x - s.x);
+  const spread = Math.PI * 2 * (0.08 + 0.92 * t) * (count > 1 ? (count - 1) / count : 0);
+  return Array.from({ length: count }, (_, i) => {
+    const a = inward + (count === 1 ? 0 : (i / (count - 1) - 0.5) * spread) + jitter(0.05);
+    const out = 7 + rand() * 4; // hug the rim
+    return {
+      cx: s.x + Math.cos(a) * (s.rx + out),
+      cy: s.y + Math.sin(a) * (s.ry + out),
+      rot: rand() * 72,
+      size: 1.05 + rand() * 0.2,
+    };
+  });
+});
+
+// Light scatter of pebbles hugging both edges of the path.
+// Distance from a point to the spine, and whether it falls on a stone — used to keep grass
+// and pebbles in the right places.
+function distToSpine(x: number, y: number) {
+  let best = Infinity;
+  for (let i = 0; i < dense.length; i += 3) best = Math.min(best, Math.hypot(dense[i].x - x, dense[i].y - y));
+  return best;
+}
+const onStone = (x: number, y: number, pad: number) =>
+  [...allStones, nextStone].some((st) => ((x - st.x) / (st.rx + pad)) ** 2 + ((y - st.y) / (st.ry + pad)) ** 2 < 1);
+
+// Little pebbles: a scatter along the path edges, a few ringing each stone, and a cluster
+// filling each gap so the stones read as separate steps.
+const pebbleShades = ['#c9c4b9', '#b5b0a5', '#d6d1c6', '#a39e93', '#bfb9ad'];
+const pebbles: { d: string; fill: string }[] = [];
+function addPebble(x: number, y: number, r: number) {
+  if (onStone(x, y, 3)) return;
+  pebbles.push({ d: blobPath(x, y, r * (1.1 + rand() * 0.4), r), fill: pebbleShades[Math.floor(rand() * pebbleShades.length)] });
+}
+for (let s = 20; s < spineLength - 40; s += 11) {
+  const p = pointAt(s);
+  const off = (rand() > 0.5 ? 1 : -1) * (38 + rand() * 22);
+  addPebble(p.x + p.nx * off + jitter(5), p.y + p.ny * off + jitter(5), 2.5 + rand() * 4.5);
+}
+allStones.forEach((st) => {
+  for (let i = 0; i < 9; i++) {
+    const ang = rand() * Math.PI * 2;
+    const pad = 7 + rand() * 12;
+    addPebble(st.x + Math.cos(ang) * (st.rx + pad), st.y + Math.sin(ang) * (st.ry + pad), 2.5 + rand() * 4);
+  }
+});
+mainStones.slice(1).forEach((st, i) => {
+  const prev = mainStones[i];
+  const dx = st.x - prev.x;
+  const dy = st.y - prev.y;
+  const len = Math.hypot(dx, dy) || 1;
+  for (let k = 0; k < 9; k++) {
+    const t = 0.5 + jitter(0.12);
+    const side = jitter(1) * 46;
+    addPebble(prev.x + dx * t + (-dy / len) * side, prev.y + dy * t + (dx / len) * side, 2.5 + rand() * 4.5);
+  }
+});
+
+// Ground cover: thousands of tiny leaves and grass tufts filling the meadow, thinning out
+// where they meet the gravel. Batched into one path per shade so the SVG stays light.
+const hedgeArea = { cx: 410, cy: 610, rx: 285, ry: 235 };
+// Extra ground that rounds out the island's left flank, so the outline bulges rather than dips.
+const fillAreas = [{ cx: 150, cy: 470, rx: 170, ry: 240 }];
+const leafTones = ['#c6daa8', '#bdd49d', '#b4cd93', '#cddfb1'];
+const bladeTones = ['#9ec27b', '#a8c987', '#94b972'];
+const leafPaths = leafTones.map(() => [] as string[]);
+const bladePaths = bladeTones.map(() => [] as string[]);
+const inIsland = (x: number, y: number, d: number) =>
+  d < 290 ||
+  [hedgeArea, ...fillAreas].some((a) => ((x - a.cx) / (a.rx + 120)) ** 2 + ((y - a.cy) / (a.ry + 120)) ** 2 < 1) ||
+  bushAnchors.some((b) => Math.hypot(b.x - x, b.y - y) < 62 * b.s + 120);
+for (let i = 0; i < 6500; i++) {
+  const x = view.x + rand() * view.w;
+  const y = view.y + rand() * view.h;
+  const d = distToSpine(x, y);
+  if (d < 46 || (d < 62 && rand() < 0.55) || onStone(x, y, 4) || !inIsland(x, y, d)) continue;
+  if (rand() < 0.62) {
+    // a small leaf: two arcs, randomly turned
+    const r = 4 + rand() * 4.5;
+    const a = rand() * Math.PI;
+    const ex = Math.cos(a) * r;
+    const ey = Math.sin(a) * r;
+    leafPaths[Math.floor(rand() * leafTones.length)].push(
+      `M${(x - ex).toFixed(1)} ${(y - ey).toFixed(1)}A${r.toFixed(1)} ${(r * 0.6).toFixed(1)} ${((a * 180) / Math.PI).toFixed(0)} 0 1 ${(x + ex).toFixed(1)} ${(y + ey).toFixed(1)}A${r.toFixed(1)} ${(r * 0.6).toFixed(1)} ${((a * 180) / Math.PI).toFixed(0)} 0 1 ${(x - ex).toFixed(1)} ${(y - ey).toFixed(1)}Z`,
+    );
+  } else {
+    // a tuft of 3–5 blades fanning up from one root
+    const blades = 3 + Math.floor(rand() * 3);
+    let d2 = '';
+    for (let b = 0; b < blades; b++) {
+      const lean = (b - (blades - 1) / 2) * 3 + jitter(1.4);
+      const h = 8 + rand() * 7;
+      d2 += `M${x.toFixed(1)} ${y.toFixed(1)}q${(lean * 0.3).toFixed(1)} ${(-h * 0.6).toFixed(1)} ${lean.toFixed(1)} ${(-h).toFixed(1)}`;
+    }
+    bladePaths[Math.floor(rand() * bladeTones.length)].push(d2);
+  }
+}
+const groundLeaves = leafTones.map((fill, i) => ({ fill, d: leafPaths[i].join('') }));
+const groundBlades = bladeTones.map((stroke, i) => ({ stroke, d: bladePaths[i].join('') }));
+
+// --- The garden's own outline: a wide band hugging the path where the stones are, narrowing
+// along the future trail, plus the hedge inside the hook and the bushes around the edge.
+// A filter frays it into a ragged, grassy edge so the garden sits on the page like an island.
+const splitAt = cum.findIndex((c) => c > nextEnd + 50);
+const polyline = (pts: Pt[]) => pts.map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join('');
+const islandCoreD = polyline(dense.slice(0, splitAt + 1));
+const islandTrailD = polyline(dense.slice(splitAt));
+
+const yearText = (s: Stone) =>
+  s.endYear && s.endYear !== s.startYear ? `${s.startYear}–${s.endYear}` : `${s.startYear}`;
+const shortName = (name: string) => name.replace(/\s*\(.*?\)\s*/g, '').replace(/,.*$/, '').trim();
+
+const countries = [...new Set(sorted.map((c) => c.country))];
 ---
 
 <div class="journey-banner">
   <h2 class="banner-title">Professional Journey</h2>
   <p class="resume-link">{config.links.map((link, i) => <>{i > 0 && ' · '}<a href={link.url} target="_blank">{link.label}</a></>)}</p>
-  <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="xMidYMid meet">
-    <text class="axis-label" x={20} y={(paddingTop + timelineY) / 2} text-anchor="middle" transform={`rotate(-90, 20, ${(paddingTop + timelineY) / 2})`}>Scope & Responsibilities</text>
-    <text class="axis-marker" x={20} y={paddingTop + 5} text-anchor="middle">+</text>
-    <text class="axis-marker" x={20} y={timelineY - 5} text-anchor="middle">−</text>
 
-    {yearMarks.map((mark) => (
-      <g>
-        <line
-          class="grid-line"
-          x1={mark.x}
-          y1={paddingTop}
-          x2={mark.x}
-          y2={timelineY}
-        />
-        <text class="timeline-year" x={mark.x} y={timelineY + 20} text-anchor="middle">
-          {mark.year}
-        </text>
-      </g>
-    ))}
-
-    <line
-      class="timeline-axis"
-      x1={paddingX}
-      y1={timelineY}
-      x2={svgWidth - paddingX}
-      y2={timelineY}
-    />
-
+  <svg viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="A winding garden path of stepping stones, one per company I've worked at, curling up and trailing off into the future">
     <defs>
-      <linearGradient id="star-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#fcd34d" />
-        <stop offset="100%" stop-color="#f59e0b" />
+      <linearGradient id={`${uid}-meadow`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#d9e7c2" />
+        <stop offset="100%" stop-color="#cfe0b5" />
       </linearGradient>
+
+      <!-- soft, broad mottling over the lawn — no fine speckle -->
+      <filter id={`${uid}-grass`} x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="3" seed="4" result="patches" />
+        <feColorMatrix in="patches" type="matrix" values="0 0 0 0 0.52  0 0 0 0 0.66  0 0 0 0 0.38  0.8 0 0 0 -0.3" result="tufts" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.25" numOctaves="2" seed="9" result="blades" />
+        <feColorMatrix in="blades" type="matrix" values="0 0 0 0 0.56  0 0 0 0 0.69  0 0 0 0 0.42  0 0.6 0 0 -0.22" result="specks" />
+        <feMerge result="grassAll"><feMergeNode in="tufts" /><feMergeNode in="specks" /></feMerge>
+        <feComposite in="grassAll" in2="SourceGraphic" operator="in" />
+      </filter>
+
+      <!-- fine grit lighting: used for gravel and rock surfaces -->
+      <filter id={`${uid}-gravelTex`} x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="2" result="n" />
+        <feDiffuseLighting in="n" surfaceScale="2.2" lighting-color="#ffffff" result="lit"><feDistantLight azimuth="225" elevation="48" /></feDiffuseLighting>
+        <feComposite in="lit" in2="SourceGraphic" operator="in" result="litIn" />
+        <feBlend in="SourceGraphic" in2="litIn" mode="multiply" />
+      </filter>
+      <filter id={`${uid}-stoneTex`} x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB" set:html={look.filter} />
+
+      <!-- leaves: ragged edges plus leafy light and shade -->
+      <filter id={`${uid}-foliage`} x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="7" result="warp" />
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="16" xChannelSelector="R" yChannelSelector="G" result="shape" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.28" numOctaves="3" seed="11" result="leafNoise" />
+        <feDiffuseLighting in="leafNoise" surfaceScale="3" lighting-color="#ffffff" result="lit"><feDistantLight azimuth="225" elevation="45" /></feDiffuseLighting>
+        <feComposite in="lit" in2="shape" operator="in" result="litIn" />
+        <feBlend in="shape" in2="litIn" mode="multiply" />
+      </filter>
+
+      <filter id={`${uid}-softShadow`} x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="7" />
+      </filter>
+
+      <!-- curved-surface shading for the pebbles: lit top-left, falling into shade bottom-right -->
+      <radialGradient id={`${uid}-stoneShade`} cx="36%" cy="30%" r="78%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.38" />
+        <stop offset="40%" stop-color="#ffffff" stop-opacity="0" />
+        <stop offset="80%" stop-color="#000000" stop-opacity="0.08" />
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.26" />
+      </radialGradient>
+
+      <!-- the path fades out once it passes today -->
+      <linearGradient id={`${uid}-trailFade`} gradientUnits="userSpaceOnUse" x1={fadeFrom.x} y1={fadeFrom.y} x2={fadeTo.x} y2={fadeTo.y}>
+        <stop offset="0%" stop-color="#ffffff" />
+        <stop offset="100%" stop-color="#000000" />
+      </linearGradient>
+      <mask id={`${uid}-trailMask`} maskUnits="userSpaceOnUse" x={view.x} y={view.y} width={view.w} height={view.h}>
+        <rect x={view.x} y={view.y} width={view.w} height={view.h} fill={`url(#${uid}-trailFade)`} />
+      </mask>
+      <filter id={`${uid}-islandEdge`} filterUnits="userSpaceOnUse" x={view.x} y={view.y} width={view.w} height={view.h}>
+        <!-- a wide blur then a hard threshold melts the band into one smooth, rounded shape -->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="60" result="melt" />
+        <feComponentTransfer in="melt" result="smooth"><feFuncA type="linear" slope="8" intercept="-2.6" /></feComponentTransfer>
+        <feGaussianBlur in="smooth" stdDeviation="10" result="soft" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="21" result="warp" />
+        <feDisplacementMap in="soft" in2="warp" scale="45" xChannelSelector="R" yChannelSelector="G" result="wobbly" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="1" seed="5" result="grain" />
+        <feComposite in="wobbly" in2="grain" operator="arithmetic" k1="0" k2="1" k3="0.4" k4="-0.2" result="grainy" />
+        <feComponentTransfer in="grainy">
+          <feFuncR type="linear" slope="0" intercept="1" />
+          <feFuncG type="linear" slope="0" intercept="1" />
+          <feFuncB type="linear" slope="0" intercept="1" />
+          <feFuncA type="linear" slope="5" intercept="-1.7" />
+        </feComponentTransfer>
+      </filter>
+      <mask id={`${uid}-island`} maskUnits="userSpaceOnUse" x={view.x} y={view.y} width={view.w} height={view.h}>
+        <g filter={`url(#${uid}-islandEdge)`} fill="#fff">
+          <path d={islandCoreD} fill="none" stroke="#fff" stroke-width="350" stroke-linecap="round" stroke-linejoin="round" />
+          <path d={islandTrailD} fill="none" stroke="#fff" stroke-width="180" stroke-linecap="round" stroke-linejoin="round" />
+          {[hedgeArea, ...fillAreas].map((a) => <ellipse cx={a.cx} cy={a.cy} rx={a.rx} ry={a.ry} />)}
+          {bushes.map((b) => <circle cx={b.x} cy={b.y} r={62 * b.s} />)}
+          {parallelStones.map((st) => <ellipse cx={st.x} cy={st.y} rx={st.rx + 90} ry={st.ry + 90} />)}
+        </g>
+      </mask>
     </defs>
-    <g transform={`translate(${paddingX}, ${paddingTop - 20})`}>
-      <text class="legend-label" x={0} y={12}>Overall Experience:</text>
-      <text x={120} y={12} font-size="11" fill="url(#star-gradient)">★★★★★</text>
-    </g>
 
-    {countries.map((country, i) => (
-      <g transform={`translate(${svgWidth - paddingX - countries.length * 100 + i * 100}, ${paddingTop - 20})`}>
-        <rect width="14" height="14" rx="3" ry="3" fill={countryColors[country] || defaultColor} />
-        <text class="legend-label" x={20} y={12}>{country}</text>
+    <g mask={`url(#${uid}-island)`}>
+      <rect x={view.x} y={view.y} width={view.w} height={view.h} fill={`url(#${uid}-meadow)`} />
+      <rect x={view.x} y={view.y} width={view.w} height={view.h} fill="#000" filter={`url(#${uid}-grass)`} opacity="0.45" />
+      {groundLeaves.map((l) => <path d={l.d} fill={l.fill} opacity="0.75" />)}
+      {groundBlades.map((b) => <path d={b.d} fill="none" stroke={b.stroke} stroke-width="1.8" stroke-linecap="round" opacity="0.6" />)}
+
+      <!-- back layer greenery -->
+      {bushes.slice(0, backBushCount).map((b) => (
+        <g>
+          <ellipse cx={b.x + 10 * b.s} cy={b.y + 26 * b.s} rx={40 * b.s} ry={18 * b.s} fill="#1e2e14" opacity="0.28" filter={`url(#${uid}-softShadow)`} />
+          <g filter={`url(#${uid}-foliage)`}>{b.circles.map((c) => <circle cx={c.cx} cy={c.cy} r={c.r} fill={c.fill} />)}</g>
+        </g>
+      ))}
+
+      <!-- the gravel bed the stones are set into, fading out beyond today -->
+      <g mask={`url(#${uid}-trailMask)`}>
+        <path d={pathD} fill="none" stroke="#b9ae95" stroke-width="122" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" filter={`url(#${uid}-softShadow)`} />
+        <path d={pathD} fill="none" stroke="#e2dac7" stroke-width="106" stroke-linecap="round" stroke-linejoin="round" filter={`url(#${uid}-gravelTex)`} />
+        <g filter={`url(#${uid}-gravelTex)`}>{pebbles.map((p) => <path d={p.d} fill={p.fill} stroke="#8d887d" stroke-width="0.6" />)}</g>
+        {pebbles.map((p) => <path d={p.d} fill={`url(#${uid}-stoneShade)`} />)}
+        {ghostStones.map((g) => (
+          <path d={g.outline} fill="#a9a59c" fill-opacity={g.opacity * 0.5} stroke="#8e897e" stroke-width="1.5" stroke-dasharray="5 6" opacity={g.opacity} />
+        ))}
       </g>
-    ))}
 
-    {bars.map((bar, i) => {
-      const side = labelSide(bar, i);
-      const labelY = side === 'above' ? bar.y - 5 : bar.y + barHeight + 13;
-      return (
-        <a href={`/company/${bar.slug}/`}>
-          <g class={`journey-bar ${bar.isParallel ? 'parallel' : ''}`}>
-            <image
-              href={bar.logo}
-              x={bar.x1 - 22}
-              y={bar.y + (barHeight - 20) / 2}
-              width="20"
-              height="20"
-            />
-            <rect
-              x={bar.x1}
-              y={bar.y}
-              width={bar.width}
-              height={barHeight}
-              rx="5"
-              ry="5"
-              fill={bar.color}
-            />
-            <text
-              class="bar-name"
-              x={bar.x1 + bar.width / 2}
-              y={labelY}
-              text-anchor="middle"
-            >
-              {bar.name} <tspan class="star" font-size="8">{'★'.repeat(bar.fullStars)}{bar.halfStar ? '½' : ''}</tspan>
-            </text>
+      <!-- branch connectors to parallel roles: a narrower side trail in the same gravel as the main path -->
+      {branches.map((b) => {
+        const d = `M ${b.x1} ${b.y1} Q ${(b.x1 + b.x2) / 2} ${(b.y1 + b.y2) / 2 - 40}, ${b.x2} ${b.y2}`;
+        return (
+          <g>
+            <path d={d} fill="none" stroke="#b9ae95" stroke-width="44" stroke-linecap="round" opacity="0.75" filter={`url(#${uid}-softShadow)`} />
+            <path d={d} fill="none" stroke="#e2dac7" stroke-width="36" stroke-linecap="round" filter={`url(#${uid}-gravelTex)`} />
           </g>
-        </a>
-      );
-    })}
+        );
+      })}
+
+      <!-- front layer greenery + flowers -->
+      {bushes.slice(backBushCount).map((b) => (
+        <g>
+          <ellipse cx={b.x + 10 * b.s} cy={b.y + 26 * b.s} rx={40 * b.s} ry={18 * b.s} fill="#1e2e14" opacity="0.28" filter={`url(#${uid}-softShadow)`} />
+          <g filter={`url(#${uid}-foliage)`}>{b.circles.map((c) => <circle cx={c.cx} cy={c.cy} r={c.r} fill={c.fill} />)}</g>
+        </g>
+      ))}
+      {flowers.map((f) => (
+        <g transform={`translate(${f.cx}, ${f.cy}) rotate(${f.rot}) scale(${f.size})`}>
+          {[0, 72, 144, 216, 288].map((a) => <ellipse cx="0" cy="-3.6" rx="2.3" ry="3.6" fill={flowerPetal} stroke="#9c241c" stroke-width="0.4" transform={`rotate(${a})`} />)}
+          <circle cx="0" cy="0" r="1.9" fill={flowerCentre} />
+        </g>
+      ))}
+
+      <!-- stones -->
+      {allStones.map((s) => {
+        const name = shortName(s.company.name);
+        const starsLen = s.fullStars + (s.halfStar ? 1 : 0);
+        const badgeW = starsLen * 12.4 + yearText(s).length * 7.2 + 22;
+        return (
+          <a href={`/company/${s.company.slug}/`} class="stone-link" aria-label={`${s.company.name}, ${s.company.city}`}>
+            <g class={`stone ${s.isParallel ? 'parallel' : ''}`} style={`animation-delay: ${(s.company.order - 1) * 0.12}s`}>
+              <ellipse cx={s.x + s.rx * 0.08} cy={s.y + s.ry * 0.22} rx={s.rx * 1.02} ry={s.ry * 0.98} fill="#2b2a24" opacity="0.4" filter={`url(#${uid}-softShadow)`} />
+              <g filter={`url(#${uid}-stoneTex)`}>
+                <path d={s.outline} fill={s.fill} />
+              </g>
+              <path d={s.outline} fill="none" stroke={s.edge} stroke-width="1.2" stroke-opacity={look.edgeOpacity} />
+              <text class="stone-text" x={s.x} y={s.y - 7} text-anchor="middle" font-size="16" font-weight="800" letter-spacing="0.2" fill={nameFill}>{name}</text>
+              <rect class="stone-text" x={s.x - badgeW / 2} y={s.y + 1} width={badgeW} height="22" rx="11" fill="rgba(30, 28, 23, 0.85)" />
+              <text class="stone-text" x={s.x} y={s.y + 16.5} text-anchor="middle" font-size="12" font-weight="600">
+                <tspan fill="#fcc63c" font-size="13.5" font-weight="700">{'★'.repeat(s.fullStars)}{s.halfStar ? '½' : ''}</tspan>
+                <tspan dx="5" fill="#ffffff">{yearText(s)}</tspan>
+              </text>
+            </g>
+          </a>
+        );
+      })}
+
+      <!-- what's next: an unnamed stone, no flowers yet -->
+      <g class="stone" style={`animation-delay: ${sorted.length * 0.12}s`}>
+        <title>What's next?</title>
+        <ellipse cx={nextStone.x + nextStone.rx * 0.08} cy={nextStone.y + nextStone.ry * 0.22} rx={nextStone.rx * 1.02} ry={nextStone.ry * 0.98} fill="#2b2a24" opacity="0.4" filter={`url(#${uid}-softShadow)`} />
+        <g filter={`url(#${uid}-stoneTex)`}>
+          <path d={nextStone.outline} fill={nextStone.fill} />
+        </g>
+        <path d={nextStone.outline} fill="none" stroke={nextStone.edge} stroke-width="1.2" stroke-opacity={look.edgeOpacity} />
+        <text class="stone-text" x={nextStone.x} y={nextStone.y + 12} text-anchor="middle" font-size="34" font-weight="800" fill={nameFill}>?</text>
+      </g>
+    </g>
   </svg>
-  <p class="hint">Click/Tap on any company to read more</p>
+
+  <div class="legend">
+    <span class="legend-note"><span class="legend-stars">★</span> how much I enjoyed it (out of 5) ·
+      <svg class="legend-flower" viewBox="-6 -6 12 12" width="16" height="16" aria-label="flowers" role="img">
+        {[0, 72, 144, 216, 288].map((a) => <ellipse cx="0" cy="-2.8" rx="1.8" ry="2.8" fill={flowerPetal} stroke="#9c241c" stroke-width="0.3" transform={`rotate(${a})`} />)}
+        <circle cx="0" cy="0" r="1.5" fill={flowerCentre} />
+      </svg>
+      ∝ scope &amp; responsibilities</span>
+    <span class="legend-countries">
+      {countries.map((country) => (
+        <span class="legend-chip">
+          <span class="legend-dot" style={`background:${stoneFill(colorFor(country))};border:1.5px solid ${stoneEdge(colorFor(country))};width:15px;height:15px;border-radius:50%;display:inline-block;`}></span>
+          <span>{country}</span>
+        </span>
+      ))}
+    </span>
+  </div>
+  <p class="hint">Click/Tap on any stone to read more</p>
 </div>
 
 <style>
@@ -162,111 +703,123 @@ function labelSide(bar: typeof bars[0], index: number) {
     margin-bottom: var(--spacing-lg);
   }
 
-  .resume-link {
+  .resume-link,
+  .banner-title {
     max-width: var(--max-width);
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     padding: 0 var(--spacing-lg);
+  }
+
+  .resume-link {
+    margin: 0 auto;
+  }
+
+  .banner-title {
+    color: var(--color-primary);
+    margin: 0 auto var(--spacing-sm);
+  }
+
+  .journey-banner svg {
+    width: 100%;
+    max-width: 1040px;
+    height: auto;
+    display: block;
+    margin: var(--spacing-sm) auto 0;
+  }
+
+  .stone-link {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+
+  .stone.parallel {
+    opacity: 0.92;
+  }
+
+  .stone {
+    transition: transform 0.2s ease;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .stone-link:hover .stone {
+    transform: translateY(-3px);
+  }
+
+  /* On load each stone gives a gentle double pulse, rippling along the path in order. */
+  .stone {
+    animation: pulse 0.75s ease-in-out 2;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stone {
+      animation: none;
+    }
+  }
+
+  .stone-text {
+    pointer-events: none;
+  }
+
+
+
+
+
+
+  .legend {
+    max-width: var(--max-width);
+    margin: var(--spacing-sm) auto 0;
+    padding: 0 var(--spacing-lg);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm) var(--spacing-lg);
+    justify-content: center;
+    align-items: center;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+  }
+
+  .legend-stars {
+    color: #f59e0b;
+  }
+
+  /* more specific than `.journey-banner svg`, which would stretch the icon to full width */
+  .journey-banner .legend-flower {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 0 2px;
+    vertical-align: -3px;
+  }
+
+  .legend-countries {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
   }
 
   .hint {
     text-align: center;
     color: var(--color-text-muted);
-    font-size: 0.85rem;
-    margin: 0;
-  }
-
-  .banner-title {
-    color: var(--color-primary);
-    max-width: var(--max-width);
-    margin: 0 auto var(--spacing-sm);
-    padding: 0 var(--spacing-lg);
-  }
-
-  .journey-banner svg {
-    width: 100%;
-    max-width: 1400px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-  }
-
-  .timeline-axis {
-    stroke: #d1d5db;
-    stroke-width: 1.5;
-  }
-
-  .grid-line {
-    stroke: #e5e7eb;
-    stroke-width: 1;
-    stroke-dasharray: none;
-  }
-
-  .timeline-year {
-    font-size: 11px;
-    fill: #6b7280;
-  }
-
-  .journey-bar rect {
-    transition: filter 0.2s, opacity 0.2s;
-    cursor: pointer;
-    animation: pulse 0.75s ease-in-out 2;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(1.05); }
-  }
-
-  .journey-bar:hover rect {
-    filter: drop-shadow(0 3px 10px rgba(99, 102, 241, 0.35)) brightness(1.1);
-  }
-
-  .journey-bar.parallel rect {
-    opacity: 0.85;
-  }
-
-  .journey-bar.parallel:hover rect {
-    opacity: 1;
-  }
-
-  .bar-name {
-    font-size: 11px;
-    font-weight: 600;
-    fill: #4b5563;
-    pointer-events: none;
-  }
-
-  .journey-bar:hover .bar-name {
-    fill: #1f2937;
-  }
-
-  .legend-label {
-    font-size: 12px;
-    fill: #6b7280;
-  }
-
-  .axis-label {
-    font-size: 12px;
-    fill: #6b7280;
-    letter-spacing: 0.05em;
-  }
-
-  .axis-marker {
-    font-size: 14px;
-    fill: #6b7280;
-  }
-
-  .star {
-    fill: #f59e0b;
-    pointer-events: none;
-  }
-
-  .star-half {
-    fill: #fcd34d;
-    pointer-events: none;
-  }
-
-  a {
-    text-decoration: none;
+    font-size: 0.95rem;
+    margin: var(--spacing-sm) 0 0;
   }
 </style>
