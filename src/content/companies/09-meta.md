@@ -29,16 +29,22 @@ To maximize my RSU grant — which was calculated based on a price window just b
 In true Meta fashion, the team I matched with went through a re-org right around the time I joined, and my official manager changed three times in my first month.
 When the dust settled, I was happy to land on the team maintaining the CI/CD pipeline for Meta's Wearables products (e.g. the RayBan Meta glasses and more), as I had worked on internal tooling and was passionate about developer experience.
 
-After a few taster projects for my onboarding, my manager Neil introduced me to a large migration project that had not been progressing smoothly. As teams from multiple programs were re-orged together, a tech lead was needed to consolidate their respective migration efforts, and I was happy to step into it.
+<div class="story" id="migration" data-title="Taking on the hot-potato migration" data-questions="ambiguity,trust">
+
+After a few taster projects for my onboarding, my manager Neil introduced me to a large migration project that had not been progressing smoothly: moving the end-to-end (E2E) tests for all of Wearables' products onto a new test execution framework. As teams from multiple programs were re-orged together, a tech lead was needed to consolidate their respective migration efforts, and I was happy to step into it as the tech lead of the E2E test infrastructure.
 
 I didn't know at the time, but this migration was a bit of a hot potato, as it had high complexity and uncertainty but lacked clear motivations or rewards.
 I just put my head down and got to work.
-I quickly put together the holistic picture of its current state, identified the areas that needed work, made plans, and started executing, while transparently communicating the progress and the challenges.
+I quickly put together the holistic picture of its current state, identified the areas that needed work, made plans, and tackled the technical challenges one by one as they come up, while transparently communicating the progress the entire time.
 Along the way, I helped rebuild some of the trust that was lost with the partner teams.
 
-We made meaningful progress for the migration by the end of the year, but my limited knowledge of and interest in the device code meant that I'd never be able to connect the dots end-to-end and develop a bigger vision of what we were building.
+The effort spanned over 2,000 tests across 5 products, and the tests that moved to the new framework became 7x more reliable and up to 40% faster.
 
-Despite getting an "Exceeding Expectations" rating at year end, I wanted to work in an area where I was familiar with more of the stack.
+</div>
+
+Despite the good progress we made on the migration by the end of the year, my limited knowledge of and interest in the device code meant that I'd never be able to connect the dots end-to-end and develop a bigger vision of what we were building.
+
+I felt lucky getting "Exceeding Expectations" rating at year end, but I wanted to work in an area where I was more familiar with more of the stack.
 </div>
 
 <div class="role-card">
@@ -54,6 +60,8 @@ I spoke to the managers of a few teams here, and felt excited about the opportun
 
 The reality was a bit less comfortable.
 
+<div class="story" id="threads" data-title="Turning around a draining first half" data-questions="setback">
+
 As soon as I joined in the middle of H1 2025, I was tasked with collaborating with the Threads team and bringing some of the more state-of-the-art search technologies from Facebook to it, as my onboarding project.
 It was meant to be relatively straightforward, as the deep layers of Meta's infra meant that the implementations were largely simple configuration changes.
 However, we underestimated the many nuanced product & usage differences between the products, and the changes required many experiments and iterations to get right.
@@ -66,7 +74,13 @@ The idea was simple, but getting all the way to launching it took many rounds of
 
 On the product front, I took the simple direction of "Personalization", did some research, expanded it into a fully scoped roadmap, and convinced a couple people to work on it with me. Despite only starting in August, we quickly got into a cadence, forming, validating, and testing one hypothesis after the next, and launched a few valuable changes. However, possibly due to noisy metrics, or possibly due to the launch of a few big features in other work streams, the overall effect of the personalization effort did not show up nearly as strongly as the individual changes suggested.
 
+</div>
+
+<div class="story" id="inference" data-title="Cutting inference failures from ~10% to under 1%" data-questions="">
+
 The only work that I felt a little more in control of was helping to reduce a number of models' peak inference failure rate from ~10% down to <1%. This was a pure system-level debugging exercise that I was able to get through with high precision & confidence. I suspect this was also the work that got me scraping by a "Meeting Expectations" at the year end.
+
+</div>
 
 </div>
 

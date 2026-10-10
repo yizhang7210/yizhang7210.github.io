@@ -2,7 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { getSiteConfig } from '../../config';
+import { getRecruiting, STORY_OPEN, questionHref } from '../../recruiting';
 const config = await getSiteConfig();
+const recruiting = await getRecruiting();
 
 export async function getStaticPaths() {
   const entries = await getCollection('companies');
@@ -22,6 +24,18 @@ export async function getStaticPaths() {
 const { entry, prevSlug, nextSlug } = Astro.props;
 const company = entry.data;
 const { Content } = await render(entry);
+
+// Stories marked up in the markdown get a tag line linking to the recruiter questions they answer.
+const html = entry.rendered?.html;
+const withStoryTags = html?.replace(STORY_OPEN, (open, _id: string, _title: string, qs: string) => {
+  const tags = qs
+    .split(',')
+    .map((q) => q.trim())
+    .filter(Boolean)
+    .map((q) => `<a href="${questionHref(q)}">${recruiting.questionLabel(q)}</a>`)
+    .join('<span class="story-sep"> · </span>');
+  return tags ? `${open}<p class="story-tags"><span aria-hidden="true">🎤</span> Answers: ${tags}</p>` : open;
+});
 
 function formatDate(d: string) {
   if (d === 'present') return 'Present';
@@ -47,7 +61,7 @@ function formatDate(d: string) {
   </header>
 
   <div class="content">
-    <Content />
+    {withStoryTags ? <Fragment set:html={withStoryTags} /> : <Content />}
   </div>
 </BaseLayout>
 

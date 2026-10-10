@@ -33,11 +33,15 @@ I was immediately put on the internal project, Olympus, building an ambitious In
 It was mostly still greenfield, with the architecture set up by Daniel, a senior engineer, and lots of feature work to do.
 A few of us early career engineers & interns put in good effort trying to reach some imaginary feature parity before we'd start demo'ing it to potential clients & investors.
 
+<div class="story" id="olympus" data-title="Leading Olympus towards a spin-off that never came" data-questions="failure">
+
 As Daniel transitioned to revenue-generating client work, I assumed some leadership responsibilities: managing the roadmap, making key technical decisions, and reporting directly to Damian, Connected's VP Engineering. Robert, an experienced business person, was brought onboard to prepare for spinning off the project into its own entity, contingent on product traction and investor interest.
 I even attended a pitch presentation with a very well-known consumer electronics brand in Boston.
 
 As we got to the end of 2016, I was informed that we had reached the allotted time of incubation, and the spin-off was not to be.
 Robert left to do his own business, and the engineers (including myself) were repurposed to work on client projects.
+
+</div>
 
 </div>
 

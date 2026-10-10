@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry, render } from 'astro:content';
+import { getSiteConfig } from '../config';
+import { getRecruiting } from '../recruiting';
+const config = await getSiteConfig();
+
+const { page, portfolio, questions, storiesFor } = await getRecruiting();
+
+// Free-form sections live in src/content/recruiter-sections/, one file per slot on this page.
+async function section(slot: string) {
+  const entry = await getEntry('recruiter-sections', slot);
+  if (!entry) throw new Error(`Missing src/content/recruiter-sections/${slot}.md`);
+  return (await render(entry)).Content;
+}
+const OpeningMyDoor = await section('opening-my-door');
+const TechnicalHighlights = await section('technical-highlights'); // shown under the cards
+---
+
+<BaseLayout title={`${page.data.title} - ${config.name}`}>
+  <a href="/">&larr; Back</a>
+
+  <header class="page-header">
+    <h1>{page.data.title}</h1>
+    {page.data.subtitle && <p class="subtitle">{page.data.subtitle}</p>}
+  </header>
+
+  <section class="section contact">
+    <OpeningMyDoor />
+  </section>
+
+  <section class="section">
+    <h2>Technical highlights</h2>
+    <div class="portfolio">
+      {portfolio.map((item) => (
+        <article class="role-card portfolio-item">
+          <h3>{item.title}</h3>
+          <p>{item.summary}</p>
+          <div class="skill-pills">{item.skills.map((s) => <span>{s}</span>)}</div>
+          <p class="item-links">
+            {item.story && <a href={item.story.href}>Read the story &rarr;</a>}
+            {item.links.map((l) => <a href={l.url} target={l.url.startsWith('http') ? '_blank' : undefined}>{l.label}</a>)}
+          </p>
+        </article>
+      ))}
+    </div>
+    <div class="highlights-notes"><TechnicalHighlights /></div>
+  </section>
+
+  <section class="section">
+    <h2>Behavioral questions</h2>
+    <p class="intro">
+      Real examples to common behavioral questions.
+    </p>
+    <ol class="question-index">
+      {questions.map((q) => <li><a href={`#q-${q.id}`}>{q.question}</a></li>)}
+    </ol>
+
+    {questions.map((q) => (
+      <article class="question" id={`q-${q.id}`}>
+        <h3>{q.question}</h3>
+        <p>{q.answer}</p>
+        <ul class="story-links">
+          {storiesFor(q.id).map((s) => (
+            <li>
+              <a href={s.href}><span class="story-company">{s.company}</span> — {s.title} &rarr;</a>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  /* no rule under the header: each section heading below already has its own */
+  .page-header {
+    margin: var(--spacing-lg) 0 var(--spacing-xl);
+  }
+
+  .page-header h1 {
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  .subtitle {
+    color: var(--color-text-muted);
+    margin: var(--spacing-sm) 0 0;
+  }
+
+  .section {
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .section h2,
+  .contact :global(h2) {
+    color: var(--color-primary);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .portfolio {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .portfolio-item {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .portfolio-item p {
+    margin: var(--spacing-sm) 0 0;
+  }
+
+  .item-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: auto !important;
+    padding-top: var(--spacing-md);
+    font-size: 0.9rem;
+  }
+
+  .highlights-notes {
+    margin-top: var(--spacing-lg);
+  }
+
+  .intro {
+    color: var(--color-text-muted);
+  }
+
+  .question-index {
+    padding-left: 1.4rem;
+    line-height: 1.9;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .question {
+    padding: var(--spacing-md) 0;
+    border-top: 1px solid var(--color-border);
+    scroll-margin-top: var(--spacing-md);
+  }
+
+  .question h3 {
+    color: var(--color-primary);
+    margin: 0 0 var(--spacing-sm);
+  }
+
+  .question:target h3 {
+    background: #fef9c3;
+  }
+
+  .story-links {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-sm) 0 0;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .story-company {
+    font-weight: 600;
+  }
+</style>

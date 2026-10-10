@@ -675,9 +675,10 @@ const nameY = narrow ? 7 : -7;
       );
     })}
 
-    <!-- what's next: an unnamed stone, no flowers yet -->
+    <!-- what's next: an unnamed stone, no flowers yet — it leads to the page for recruiters -->
+    <a href="/recruiters/" class="stone-link" aria-label="What's next? For recruiters">
     <g class="stone" style={`animation-delay: ${sorted.length * 0.12}s`}>
-      <title>What's next?</title>
+      <title>What's next? For recruiters</title>
       <ellipse cx={nextStone.x + nextStone.rx * 0.08} cy={nextStone.y + nextStone.ry * 0.22} rx={nextStone.rx * 1.02} ry={nextStone.ry * 0.98} fill="#2b2a24" opacity="0.4" filter={`url(#${uid}-softShadow)`} />
       <g filter={`url(#${uid}-stoneTex)`}>
         <path d={nextStone.outline} fill={nextStone.fill} />
@@ -685,6 +686,7 @@ const nameY = narrow ? 7 : -7;
       <path d={nextStone.outline} fill="none" stroke={nextStone.edge} stroke-width="1.2" stroke-opacity={look.edgeOpacity} />
       <text class="stone-text" x={nextStone.x} y={nextStone.y + (narrow ? 18 : 12)} text-anchor="middle" font-size={narrow ? 52 : 34} font-weight="800" fill={nameFill}>?</text>
     </g>
+    </a>
   </g>
 </svg>
 

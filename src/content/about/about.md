@@ -6,8 +6,10 @@ links:
     url: "https://www.linkedin.com/in/yizhang7210/"
   - label: "resume"
     url: "/resume_yi_zhang.pdf"
-  - label: "engineering blog"
+  - label: "blog"
     url: "https://www.pseudofreedom.com/"
+  - label: "recruiters"
+    url: "/recruiters/"
 countryColors:
   Canada: "#d6342b"
   USA: "#2b3648"

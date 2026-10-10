@@ -43,12 +43,20 @@ As a result, the development process was in constant flux, and was a major sourc
 
 By chance, I came across Andrei's slightly controversial yet inspiring talk about his vision of the development workflow in the new cloud & microservices era. So when Andrei was tasked to start the **Engineering Experience** team to focus on engineering productivity & welfare, I was eager to join, and leadership was kind enough to approve, despite my short tenure.
 
+<div class="story" id="dev-env" data-title="A Slack bot for 6-minute dev environments" data-questions="">
+
 We immediately got to work. Joining forces with the cloud infra org, we built a **slack bot** that, in 6 minutes, would provision an individual development environment on k8s that contained all the core backend microservices of TransferWise. An engineer could easily swap out any of these to one they were running locally, so they could test major features end-to-end.
 This exact process used to take 2 hours and fail half the time.
 
+</div>
+
 As part of expanding this effort to 50+ services, we, working as consultants, helped many teams across the global offices to migrate their services onto k8s and the cloud. This gave me exposure to a large surface area of TransferWise's backend, which I greatly appreciated. We even worked with the microservices expert, Sam Newman, who advised us on our architecture and the migration.
 
+<div class="story" id="service-template" data-title="The service template everyone adopted" data-questions="">
+
 As more services moved to k8s, even more services were being created. To help with efficiency, I created a **service template** that included the scaffolding of a typical TransferWise backend service, with all the standard libraries and configurations set up out of the box. To my delight, this quickly became the default way of creating new services, and saved a tremendous amount of engineering time.
+
+</div>
 
 </div>
 

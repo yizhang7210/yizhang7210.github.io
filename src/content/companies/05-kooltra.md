@@ -25,6 +25,8 @@ With my affinity for FX developed at OANDA, and a PM role on offer here, I was h
 #### Engineering
 The first thing I realized walking into Kooltra was that the people were smart, but literally everyone was doing their jobs for the first time - from the CEO, to the VP, to basically everyone on Engineering.
 
+<div class="story" id="process-revamp" data-title="Rebuilding the engineering process as a PM" data-questions="influence,conflict">
+
 The engineering set-up was a big mess, created by the VP of R&D (let's call him Men), who had a stellar resume with a Ph.D. and an MBA, but no practical experience building software.
 - Nobody knew git branching, so for the same codebase, everyone had their own **repo**, and would force push into a central repo for integration.
 - On top of this, everyone created separate repos for prior versions of the software. One codebase ended up being cloned into 30 repos (that were not even forks of each other) across the team. 🤯
@@ -39,10 +41,17 @@ One change at a time, I convinced, taught, negotiated with, and sometimes fought
 
 Men, the VP, offered occasional support, but more often than not, was pushing back on the changes. His objections didn't appear to come from a place of reason, and he didn't offer much in terms of alternative solutions. Those few months remain the most painful of my career. Our fight eventually boiled over in an email chain that copied the entire company. Three weeks later, Men was gone.
 
+</div>
+
 #### Product
+
+<div class="story" id="ceo-trust" data-title="Earning the CEO's trust over the roadmap" data-questions="trust">
+
 The product side was also somewhat dysfunctional. Adam, the CEO, would frequently go directly to individual engineers asking for features to be implemented within the day. The direct feedback loop could have helped the product, but bypassing the engineering processes, combined with ineffective communication, unfortunately led to a vicious cycle of bugs → rushing to fix them → more bugs.
 
 I spent a lot of time with Adam in his office, debating & negotiating how to build a robust roadmap that worked for both customers and engineering. By consistently delivering visible outcomes, as well as keeping a fully transparent communication channel, I built enough trust with Adam that he gradually stepped back from the daily operations of the product engineering org.
+
+</div>
 
 </div>
 
@@ -63,7 +72,11 @@ With Ryan at the helm, the product engineering org continued to improve. We hire
 
 At the same time, Ryan convinced me to stay technical, so I moved back to Engineering, and took on an official Team Lead role. With a great team and meaningful work, the year went by quickly.
 
+<div class="story" id="env-provisioning" data-title="Environment setup from days to minutes" data-questions="">
+
 One notable achievement I had was shortening new environment provisioning from a few days of manual work, all the way to a few minutes running a single automated script.
+
+</div>
 
 </div>
 
