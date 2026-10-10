@@ -20,11 +20,14 @@ const sorted = entries
   .sort((a, b) => a.order - b.order);
 
 const svgWidth = 1000;
-const svgHeight = 1200;
+// The garden is laid out on a 1000 × 1200 grid, then squashed a little vertically to keep it compact.
+// Only positions are squashed — stones, flowers and text keep their true shapes.
+const yScale = 0.95;
+const svgHeight = 1200 * yScale;
 // Wide: a white margin round the garden so its ragged outline is never cut flat by the canvas edge.
 // Narrow: crop close to the island so the garden fills the phone's width.
-const pad = 150;
-const view = narrow ? { x: -130, y: -150, w: 1190, h: 1500 } : { x: -pad, y: -pad, w: svgWidth + pad * 2, h: svgHeight + pad * 2 };
+const pad = 110;
+const view = narrow ? { x: 30, y: 70, w: 965, h: 1170 } : { x: -pad + 100, y: -pad + 180, w: svgWidth + pad * 2 - 220, h: svgHeight + pad * 2 - 190 };
 
 const countryColors: Record<string, string> = config.countryColors;
 const defaultColor = config.defaultCountryColor;
@@ -130,7 +133,7 @@ const spine: Pt[] = [
   { x: 318, y: 160 },
   { x: 305, y: 70 },
   { x: 300, y: 0 },
-];
+].map((p) => ({ x: p.x, y: p.y * yScale }));
 
 // Densely sample the spine so we can walk along it by arc length.
 const dense: Pt[] = [];
@@ -221,7 +224,7 @@ function makeStone(company: (typeof sorted)[number], x: number, y: number, rx: n
 
 // --- Walk the stones along the spine, nearly touching, like the stepping stones of a garden ---
 const mainCompanies = sorted.filter((c) => c.track !== 'parallel');
-const stoneGap = narrow ? 32 : 46;
+const stoneGap = narrow ? 60 : 46;
 const startMargin = 18;
 const stoneSpanFraction = narrow ? 0.76 : 0.78; // the rest of the spine is left for the future
 
@@ -318,15 +321,16 @@ const nextEnd = nextS + radiusAlong(nextShape.rx, nextShape.ry, pointAt(nextS).t
 
 // --- Past that the spine carries on, fading out, with a couple of faint future steps ---
 const ghostStones = [
-  { s: nextEnd + stoneGap + 34, rx: 34, opacity: 0.45 },
-  { s: nextEnd + stoneGap * 2 + 92, rx: 26, opacity: 0.28 },
+  { s: nextEnd + 40, rx: 30, opacity: 0.45 },
 ].map((g) => {
   const p = pointAt(g.s);
   const ry = g.rx * ryRatio;
   return { x: p.x, y: p.y, rx: g.rx, ry, opacity: g.opacity, outline: blobPath(p.x, p.y, g.rx, ry) };
 });
 const fadeFrom = pointAt(nextEnd);
-const fadeTo = spine[spine.length - 1];
+// The ? stone already says "what's next", so the trail only runs a short way past it before fading.
+const trailEnd = Math.min(nextEnd + 95, spineLength);
+const fadeTo = pointAt(trailEnd);
 
 // --- Decorative greenery, scattered deterministically ---
 // Each bush is a cluster of leaf masses, dark at the base and lit toward the top-left;
@@ -355,23 +359,21 @@ function bush(cx: number, cy: number, scale: number): Circle[] {
 
 const bushAnchors = [
   // back layer: around the top of the hook
-  { x: 245, y: 115, s: 0.95 },
-  { x: 440, y: 120, s: 0.95 },
-  { x: 255, y: 300, s: 0.95 },
+  { x: 440, y: 200, s: 0.85 },
   { x: 335, y: 365, s: 0.95 },
-  { x: 870, y: 255, s: 0.9 },
+  { x: 790, y: 295, s: 0.75 },
   // front layer: the big hedge filling the inside of the hook, and the foreground
-  { x: 120, y: 615, s: 2.5 },
-  { x: 270, y: 585, s: 3.1 },
+  { x: 205, y: 620, s: 2.2 },
+  { x: 310, y: 585, s: 2.9 },
   { x: 440, y: 640, s: 2.4 },
-  { x: 220, y: 730, s: 2.0 },
+  { x: 270, y: 730, s: 1.85 },
   { x: 345, y: 725, s: 1.95 },
   { x: 610, y: 990, s: 1.0 },
-  { x: 760, y: 975, s: 1.15 },
-  { x: 860, y: 880, s: 0.85 },
-];
+  { x: 660, y: 970, s: 1.05 },
+  { x: 750, y: 850, s: 0.75 },
+].map((b) => ({ ...b, y: b.y * yScale }));
 const bushes = bushAnchors.map((b) => ({ x: b.x, y: b.y, s: b.s, circles: bush(b.x + jitter(10), b.y + jitter(8), b.s) }));
-const backBushCount = 5;
+const backBushCount = 3;
 
 // Scope & responsibility: a ring of red flowers growing right round the rim of each stone. A narrow role
 // gets a single flower; the broadest gets a full ring. The ring starts on the stone's inner side.
@@ -383,12 +385,12 @@ const flowers: Flower[] = allStones.flatMap((s) => {
   const spread = Math.PI * 2 * (0.08 + 0.92 * t) * (count > 1 ? (count - 1) / count : 0);
   return Array.from({ length: count }, (_, i) => {
     const a = inward + (count === 1 ? 0 : (i / (count - 1) - 0.5) * spread) + jitter(0.05);
-    const out = (7 + rand() * 4) * (narrow ? 1.2 : 1); // hug the rim
+    const out = (7 + rand() * 4) * (narrow ? 1.05 : 0.95); // hug the rim
     return {
       cx: s.x + Math.cos(a) * (s.rx + out),
       cy: s.y + Math.sin(a) * (s.ry + out),
       rot: rand() * 72,
-      size: (1.05 + rand() * 0.2) * (narrow ? 1.2 : 1),
+      size: (1.05 + rand() * 0.2) * (narrow ? 1 : 0.9),
     };
   });
 });
@@ -438,14 +440,14 @@ mainStones.slice(1).forEach((st, i) => {
 
 // Ground cover: thousands of tiny leaves and grass tufts filling the meadow, thinning out
 // where they meet the gravel. Batched into one path per shade so the SVG stays light.
-const hedgeArea = { cx: 410, cy: 610, rx: 285, ry: 235 };
+const hedgeArea = { cx: 445, cy: 610 * yScale, rx: 250, ry: 230 * yScale };
 // Extra ground that rounds out the island — the left flank and both bottom corners — so the
 // outline bulges rather than dips.
 const fillAreas = [
-  { cx: 160, cy: 520, rx: 165, ry: 200 },
-  { cx: 165, cy: 975, rx: 115, ry: 125 },
-  { cx: 720, cy: 1040, rx: 210, ry: 150 },
-];
+  { cx: 250, cy: 520, rx: 140, ry: 190 },
+  { cx: 260, cy: 960, rx: 80, ry: 95 },
+  { cx: 600, cy: 1040, rx: 150, ry: 130 },
+].map((a) => ({ ...a, cy: a.cy * yScale, ry: a.ry * yScale }));
 const leafTones = ['#c6daa8', '#bdd49d', '#b4cd93', '#cddfb1'];
 const bladeTones = ['#9ec27b', '#a8c987', '#94b972'];
 const leafPaths = leafTones.map(() => [] as string[]);
@@ -486,19 +488,27 @@ const groundBlades = bladeTones.map((stroke, i) => ({ stroke, d: bladePaths[i].j
 // --- The garden's own outline: a wide band hugging the path where the stones are, narrowing
 // along the future trail, plus the hedge inside the hook and the bushes around the edge.
 // A filter frays it into a ragged, grassy edge so the garden sits on the page like an island.
-const found = cum.findIndex((c) => c > nextEnd + 50);
+const found = cum.findIndex((c) => c > nextEnd + 10);
 const splitAt = found < 0 ? dense.length - 2 : found; // the trail may run out on a crowded path
 const polyline = (pts: Pt[]) => pts.map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join('');
-const islandCoreD = polyline(dense.slice(0, splitAt + 1));
-const islandTrailD = polyline(dense.slice(splitAt));
+// Along the top of the hook (from Wise on) the band is narrower, so the turf doesn't bulge up over the ? stone.
+const topStart = cum.findIndex((c) => c > layout.placed[5].s);
+// The band starts a little way up the stem, so the bottom of the island rounds off inside the frame.
+const stemStart = cum.findIndex((c) => c > 70);
+const islandCoreD = polyline(dense.slice(stemStart, topStart + 1));
+const capStart = cum.findIndex((c) => c > layout.placed[layout.placed.length - 1].s); // from Meta to the ? stone
+const islandTopD = polyline(dense.slice(topStart, capStart + 1));
+const islandCapD = polyline(dense.slice(capStart, splitAt + 1)); // narrowest, so the very top rounds off
+// The turf stops a little short of the trail's end, so the top of the island stays rounded.
+const islandTrailD = polyline(dense.slice(splitAt).filter((_, i) => cum[splitAt + i] < trailEnd - 200));
 
 const yearText = (s: Stone) =>
   s.endYear && s.endYear !== s.startYear ? `${s.startYear}–${s.endYear}` : `${s.startYear}`;
 const shortName = (name: string) => name.replace(/\s*\(.*?\)\s*/g, '').replace(/,.*$/, '').trim();
 
 // Label sizes: phones get a bigger name and no rating badge (it's on the company page).
-const nameSize = narrow ? 24 : 16;
-const nameY = narrow ? 8 : -7;
+const nameSize = narrow ? 20 : 16;
+const nameY = narrow ? 7 : -7;
 ---
 
 <svg class={`garden ${variant}`} viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="A winding garden path of stepping stones, one per company I've worked at, curling up and trailing off into the future">
@@ -519,7 +529,8 @@ const nameY = narrow ? 8 : -7;
     </filter>
 
     <!-- fine grit lighting: used for gravel and rock surfaces -->
-    <filter id={`${uid}-gravelTex`} x="-5%" y="-5%" width="110%" height="110%">
+    <!-- cover the whole drawing: a box sized to the path's centre line would clip its wide stroke -->
+    <filter id={`${uid}-gravelTex`} filterUnits="userSpaceOnUse" x={view.x} y={view.y} width={view.w} height={view.h}>
       <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="2" result="n" />
       <feDiffuseLighting in="n" surfaceScale="2.2" lighting-color="#ffffff" result="lit"><feDistantLight azimuth="225" elevation="48" /></feDiffuseLighting>
       <feComposite in="lit" in2="SourceGraphic" operator="in" result="litIn" />
@@ -575,8 +586,10 @@ const nameY = narrow ? 8 : -7;
     </filter>
     <mask id={`${uid}-island`} maskUnits="userSpaceOnUse" x={view.x} y={view.y} width={view.w} height={view.h}>
       <g filter={`url(#${uid}-islandEdge)`} fill="#fff">
-        <path d={islandCoreD} fill="none" stroke="#fff" stroke-width="350" stroke-linecap="round" stroke-linejoin="round" />
-        <path d={islandTrailD} fill="none" stroke="#fff" stroke-width="180" stroke-linecap="round" stroke-linejoin="round" />
+        <path d={islandCoreD} fill="none" stroke="#fff" stroke-width={narrow ? 275 : 330} stroke-linecap="round" stroke-linejoin="round" />
+        <path d={islandTopD} fill="none" stroke="#fff" stroke-width={narrow ? 230 : 260} stroke-linecap="round" stroke-linejoin="round" />
+        <path d={islandCapD} fill="none" stroke="#fff" stroke-width={narrow ? 190 : 210} stroke-linecap="round" stroke-linejoin="round" />
+        <path d={islandTrailD} fill="none" stroke="#fff" stroke-width="200" stroke-linecap="round" stroke-linejoin="round" />
         {[hedgeArea, ...fillAreas].map((a) => <ellipse cx={a.cx} cy={a.cy} rx={a.rx} ry={a.ry} />)}
         {bushes.map((b) => <circle cx={b.x} cy={b.y} r={62 * b.s} />)}
         {parallelStones.map((st) => <ellipse cx={st.x} cy={st.y} rx={st.rx + 90} ry={st.ry + 90} />)}
@@ -678,7 +691,7 @@ const nameY = narrow ? 8 : -7;
 <style>
   .garden {
     width: 100%;
-    max-width: 1040px;
+    max-width: 1200px;
     height: auto;
     display: block;
     margin: var(--spacing-sm) auto 0;

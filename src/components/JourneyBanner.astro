@@ -11,7 +11,6 @@ const colorFor = (c: string) => config.countryColors[c] || config.defaultCountry
 ---
 
 <div class="journey-banner">
-  <h2 class="banner-title">Professional Journey</h2>
   <p class="resume-link">{config.links.map((link, i) => <>{i > 0 && ' · '}<a href={link.url} target="_blank">{link.label}</a></>)}</p>
 
   <GardenSvg variant="wide" />
@@ -40,25 +39,14 @@ const colorFor = (c: string) => config.countryColors[c] || config.defaultCountry
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     padding: 0 var(--spacing-lg);
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-sm);
     margin-bottom: var(--spacing-lg);
   }
 
-  .resume-link,
-  .banner-title {
-    max-width: var(--max-width);
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 var(--spacing-lg);
-  }
-
   .resume-link {
+    max-width: var(--max-width);
     margin: 0 auto;
-  }
-
-  .banner-title {
-    color: var(--color-primary);
-    margin: 0 auto var(--spacing-sm);
+    padding: 0 var(--spacing-lg);
   }
 
   .legend {
