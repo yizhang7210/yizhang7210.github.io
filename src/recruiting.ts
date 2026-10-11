@@ -26,7 +26,7 @@ export const getRecruiting = () => (cache ??= load());
 
 async function load() {
   const page = (await getCollection('recruiters'))[0] as CollectionEntry<'recruiters'>;
-  const { questions, portfolio } = page.data;
+  const { questions, portfolio, funProjects } = page.data;
   const questionIds = new Set(questions.map((q) => q.id));
   const companies = (await getCollection('companies')).sort((a, b) => a.data.order - b.data.order);
 
@@ -58,6 +58,7 @@ async function load() {
     page,
     questions,
     portfolio: portfolio.map((p) => ({ ...p, story: p.story ? storyByRef.get(p.story) : undefined })),
+    funProjects,
     stories,
     storiesFor: (qid: string) => stories.filter((s) => s.questions.includes(qid)),
     questionLabel: (qid: string) => questions.find((q) => q.id === qid)!.label,

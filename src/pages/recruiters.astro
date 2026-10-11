@@ -5,7 +5,7 @@ import { getSiteConfig } from '../config';
 import { getRecruiting } from '../recruiting';
 const config = await getSiteConfig();
 
-const { page, portfolio, questions, storiesFor } = await getRecruiting();
+const { page, portfolio, funProjects, questions, storiesFor } = await getRecruiting();
 
 // Free-form sections live in src/content/recruiter-sections/, one file per slot on this page.
 async function section(slot: string) {
@@ -46,6 +46,24 @@ const TechnicalHighlights = await section('technical-highlights'); // shown unde
     </div>
     <div class="highlights-notes"><TechnicalHighlights /></div>
   </section>
+
+  {funProjects.length > 0 && (
+    <section class="section">
+      <h2>Fun projects</h2>
+      <div class="portfolio">
+        {funProjects.map((item) => (
+          <article class="role-card portfolio-item">
+            <h3>{item.title}</h3>
+            <p>{item.summary}</p>
+            <div class="skill-pills">{item.skills.map((s) => <span>{s}</span>)}</div>
+            <p class="item-links">
+              {item.links.map((l) => <a href={l.url} target={l.url.startsWith('http') ? '_blank' : undefined}>{l.label}</a>)}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
 
   <section class="section">
     <h2>Behavioral questions</h2>
@@ -116,11 +134,20 @@ const TechnicalHighlights = await section('technical-highlights'); // shown unde
     margin: var(--spacing-sm) 0 0;
   }
 
+  /* pills and links sit at the bottom, so they line up across a row of cards */
+  .portfolio-item .skill-pills {
+    margin-top: auto;
+    padding-top: var(--spacing-md);
+  }
+
+  .portfolio-item .item-links {
+    margin-top: 0;
+  }
+
   .item-links {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-md);
-    margin-top: auto !important;
     padding-top: var(--spacing-md);
     font-size: 0.9rem;
   }

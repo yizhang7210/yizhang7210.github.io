@@ -67,6 +67,7 @@ export async function llmsTxt(site: URL) {
     '',
     `- [For recruiters](${abs('/recruiters/', site)}): how to reach out, technical highlights, and answers to common behavioral questions.`,
     ...recruiting.portfolio.map((p) => `- ${p.title}: ${p.summary}${p.story ? ` (${abs(p.story.href, site)})` : ''}`),
+    ...recruiting.funProjects.map((p) => `- Fun project, ${p.title}: ${p.summary}${p.links.length ? ` (${abs(p.links[0].url, site)})` : ''}`),
     '',
     '## Optional',
     '',
@@ -89,6 +90,12 @@ export async function llmsFullTxt(site: URL) {
     out.push('');
   }
   if (highlightsNotes?.body) out.push(toPlainMarkdown(highlightsNotes.body, site), '');
+  if (recruiting.funProjects.length) out.push('## Fun projects', '');
+  for (const p of recruiting.funProjects) {
+    out.push(`### ${p.title}`, '', p.summary, '', `Skills: ${p.skills.join(', ')}`);
+    for (const l of p.links) out.push(`${l.label}: ${abs(l.url, site)}`);
+    out.push('');
+  }
   out.push('## Behavioral questions', '');
   for (const q of recruiting.questions) {
     out.push(`### ${q.question}`, '', q.answer, '');

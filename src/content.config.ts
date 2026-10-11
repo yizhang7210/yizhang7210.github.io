@@ -55,6 +55,12 @@ const recruiters = defineCollection({
       links: z.array(z.object({ label: z.string(), url: z.string() })).default([]),
       story: z.string().optional(), // "<company slug>#<story id>"
     })),
+    funProjects: z.array(z.object({
+      title: z.string(),
+      summary: z.string(),
+      skills: z.array(z.string()),
+      links: z.array(z.object({ label: z.string(), url: z.string() })).default([]),
+    })).default([]),
     questions: z.array(z.object({
       id: z.string(),
       label: z.string(), // short tag shown on the stories, e.g. "Conflict"

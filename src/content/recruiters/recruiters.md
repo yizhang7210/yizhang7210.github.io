@@ -23,6 +23,29 @@ portfolio:
         url: "/rule_execution_project.pdf"
     story: "unit21#dmb"
 
+# Side projects, shown after the technical highlights.
+funProjects:
+  - title: "Porch"
+    summary: "A gateway that turns any public website into a remote MCP server, so AI agents can read it as clean Markdown. Sites can add a manifest to expose named tools, as this one does."
+    skills: ["TypeScript", "MCP", "Node.js", "SQLite", "Playwright"]
+    links:
+      - label: "Website"
+        url: "https://porch.tools"
+  - title: "Traffic lights"
+    summary: "A browser simulation for an everyday question: stopped at a red light, which lane gets you through faster? Mix big and small cars, allow lane changes, and watch it play out."
+    skills: ["JavaScript", "Canvas", "Simulation"]
+    links:
+      - label: "Try it"
+        url: "https://yizhang7210.com/traffic-lights/"
+      - label: "GitHub"
+        url: "https://github.com/yizhang7210/traffic-lights"
+  - title: "Hotpot"
+    summary: "A Spring Boot framework for building a central console of microservices: what each service is, how it's doing, and whether it meets its Service Level Objectives."
+    skills: ["Java", "Spring Boot", "Microservices"]
+    links:
+      - label: "GitHub"
+        url: "https://github.com/yizhang7210/hotpot"
+
 # Real, commonly asked behavioral questions. `label` is the short tag shown on the stories.
 # Answers are drafts written from the company pages — edit them into your own voice.
 questions:
