@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yizhang7210.com/sitemap-index.xml
+
+# A plain-markdown summary of this site for AI tools: https://yizhang7210.com/llms.txt
