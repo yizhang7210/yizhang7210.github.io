@@ -66,6 +66,7 @@ export async function llmsTxt(site: URL) {
     '## For recruiters',
     '',
     `- [For recruiters](${abs('/recruiters/', site)}): how to reach out, technical highlights, and answers to common behavioral questions.`,
+    `- [Resume](${abs('/resume_yi_zhang.md', site)}): ${config.name}'s current resume, in markdown (PDF: ${abs('/resume_yi_zhang.pdf', site)}).`,
     ...recruiting.portfolio.map((p) => `- ${p.title}: ${p.summary}${p.story ? ` (${abs(p.story.href, site)})` : ''}`),
     ...recruiting.funProjects.map((p) => `- Fun project, ${p.title}: ${p.summary}${p.links.length ? ` (${abs(p.links[0].url, site)})` : ''}`),
     '',

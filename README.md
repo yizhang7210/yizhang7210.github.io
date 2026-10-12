@@ -5,6 +5,7 @@ A static personal profile site built with [Astro](https://astro.build/), featuri
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) v18+
+- XeLaTeX (e.g. TeX Live's `texlive-xetex`), only to rebuild the resume PDF
 
 ## Getting Started
 
@@ -23,6 +24,16 @@ npm run preview
 ```
 
 The static output is generated in `dist/`.
+
+## Resume
+
+The resume's LaTeX source lives in `resume/` (Deedy template, compiled with XeLaTeX). After editing `resume/resume-Yi-Zhang.tex`, rebuild the PDF and commit it:
+
+```bash
+npm run resume   # compiles resume/ and copies the PDF to public/resume_yi_zhang.pdf
+```
+
+The site build also turns the same `.tex` into `/resume_yi_zhang.md` (see `src/resume.ts`), which the `get_resume` MCP tool serves. It fails the build on any LaTeX command it doesn't know how to render.
 
 ## Deployment
 
@@ -45,7 +56,8 @@ src/
 └── styles/                        # Global styles
 public/
 ├── logos/                         # Company logo images
-└── *.pdf                          # Slide decks and resume
+└── *.pdf                          # Slide decks and resume (built from resume/)
+resume/                            # Resume LaTeX source, class file and fonts
 ```
 
 ## Customization

@@ -1,0 +1,272 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Deedy CV/Resume
+% XeLaTeX Template
+% Version 1.0 (5/5/2014)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Debarghya Das (http://www.debarghyadas.com)
+% With extensive modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% Important notes:
+% This template needs to be compiled with XeLaTeX.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper]{deedy-resume} % Use US Letter paper, change to a4paper for A4 
+
+% Colors for links, text and headings
+\usepackage{hyperref}
+\definecolor{linkcolor}{HTML}{333333} % Blue-gray color for links
+% Other color palettes: shade=B9D7D9 and linkcolor=A40000; shade=D4D7FE and linkcolor=FF0080
+
+\hypersetup{colorlinks,breaklinks, urlcolor=linkcolor, linkcolor=linkcolor} % Set up links and colors
+
+
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\namesection{}{Yi Zhang}{ % Your name
+%\urlstyle{same}\url{http://debarghyadas.com} \\ % Your website, LinkedIn profile or other web address
+yi.zhang7210@gmail.com | +1 646.853.4884\\ % Your contact information
+\vspace{0.5em}
+Scaling systems, products, \& organizations
+}
+
+\vspace{-1.5em}
+%----------------------------------------------------------------------------------------
+%	LEFT COLUMN
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}[t]{0.36\textwidth} % The left column takes up 33% of the text width of the page
+\renewcommand{\sectionspace}{\vspace{8.45pt}} % Slightly more than the default 8pt so the bottom of this column lines up with the right column
+
+%------------------------------------------------
+% Skills
+%------------------------------------------------
+
+\section{Skills}
+
+\runsubsection{Languages}
+\descript{}
+\vspace{0.4em}
+\textbullet{} Python \textbullet{} Java \textbullet{} SQL \textbullet{} C++ \\
+\textbullet{} JavaScript \textbullet{} TypeScript \textbullet{} Go \\
+\textbullet{} R \textbullet{} Haskell \textbullet{} Bash\\
+\sectionspace % Some whitespace after the section
+
+\runsubsection{Technologies}
+\descript{}
+\vspace{0.4em}
+\textbullet{} Cloud Infrastructure \textbullet{} Databases \\
+\textbullet{} Service Architecture \textbullet{} CI/CD \\
+\textbullet{} AI \& Data Infrastructure\\
+
+\sectionspace % Some whitespace after the section
+
+%------------------------------------------------
+% Links
+%------------------------------------------------
+
+\section{Links} 
+GitHub:// \href{https://github.com/yizhang7210}{\bf yizhang7210} \\
+Career site:// \href{https://yizhang7210.com}{\bf yizhang7210.com} \\
+
+\sectionspace % Some whitespace after the section
+
+%------------------------------------------------
+% Education
+%------------------------------------------------
+
+\section{Education} 
+
+\runsubsection{University of California, Berkeley}
+
+\descript{Master of Information and Data Science}
+\location{2021 - 2023 | Berkeley, US}
+
+\sectionspace % Some whitespace after the section
+
+\runsubsection{University of Waterloo}
+
+\descript{Ph.D. Computer Science} (withdrawn)\\
+\location{2014 - 2015 | Waterloo, Canada}
+Area: Applications of Boolean functions\\
+
+\sectionspace % Some whitespace after the section
+
+\runsubsection{Imperial College London}
+
+\descript{BSc + MSc Mathematics}
+\location{2010 - 2014 | London, UK}
+1st Class Honours
+
+\sectionspace % Some whitespace after the section
+
+
+%------------------------------------------------
+% Awards
+%------------------------------------------------
+
+
+
+%------------------------ some other awards--------------------------------
+%\runsubsection{G-Research Prize}
+
+%\descript{Imperial College London}
+%\location{06/2014 | London, UK}
+
+%\sectionspace % Some whitespace after the section
+
+%\runsubsection{Ken Allen Prize}
+
+%\descript{Imperial College London}
+%\location{06/2011 | London, UK}
+
+%\sectionspace % Some whitespace after the section
+
+%------------------------------------------------
+% Publications
+%------------------------------------------------
+
+\section{Publications}
+
+\runsubsection{SPLC 2016}
+
+\descript{Best Paper Award}
+\location{09/2016 | Beijing, China}
+\textit{A Mathematical Model of Performance-Relevant Feature Interactions}\\
+{\small with J. Guo, E. Blais, K. Czarnecki, H. Yu}
+
+\sectionspace % Some whitespace after the section
+
+\runsubsection{ASE 2015}
+
+\descript{Distinguished Paper Award}
+\location{11/2015 | Lincoln, NE, USA}
+\textit{Performance Prediction of Configurable Software Systems by Fourier Learning}\\
+{\small with J. Guo, E. Blais, K. Czarnecki}
+
+\sectionspace % Some whitespace after the section
+
+%----------------------------------------------------------------------------------------
+
+\end{minipage} % The end of the left column
+\hfill
+%
+%----------------------------------------------------------------------------------------
+%	RIGHT COLUMN
+%----------------------------------------------------------------------------------------
+%
+\begin{minipage}[t]{0.63\textwidth} % The right column takes up 66% of the text width of the page
+
+%------------------------------------------------
+% Experience
+%------------------------------------------------
+
+\section{Experience}
+
+\runsubsection{Anthropic PBC}
+\descript{| Member of Technical Staff}
+
+\location{05/2026 – present | San Francisco}
+\vspace{\topsep} % Offsets tightitemize's negative top space, which otherwise overlaps the first bullet with this line
+\begin{tightitemize}
+\item Integrated multiple enterprise features (\textbf{CMEK}, Compliance API) into Claude Platform on AWS.
+\item Helped launch \textbf{5+} Claude models in Microsoft Foundry.
+\item Building Claude Platform primitives for ``Platform'' use cases (e.g. apps building on Claude and exposing it to their users, such as Cursor).
+\end{tightitemize}
+\sectionspace % Some whitespace after the section
+\vspace{-0.3em}
+
+\runsubsection{Meta}
+\descript{| Software Engineer (Staff, IC6)}
+\location{02/2024 – 05/2026 | San Francisco Bay Area}
+\vspace{0.1em}
+Reality Labs (Wearables)
+\begin{tightitemize}
+\item Tech led an effort to migrate >2000 E2E tests across all Wearables products to a new execution framework, making them \textbf{7x more reliable} \& up to \textbf{40\% faster}.
+\end{tightitemize}
+\vspace{0.1em}
+Search AI
+\begin{tightitemize}
+\item Brought Facebook's term-importance \& content-embedding retrieval models to Threads search, increasing user sessions by \textbf{0.375\%}.
+\item Introduced personalization to FB search retrieval, integrating high quality social signals \& improving search engagement by \textbf{0.5\%} while saving \textbf{0.8\%} of search CPU capacity.
+\item Reduced peak inference failure rates of several search models from \textbf{$\sim$10\%} to \textbf{<1\%} through system-level debugging.
+\end{tightitemize}
+%
+\sectionspace % Some whitespace after the section
+\vspace{-0.3em}
+%------------------------------------------------
+\runsubsection{Unit21}
+\descript{| Tech Lead Manager $\rightarrow$ Staff Engineer}
+
+\location{10/2020 – 02/2024 | San Francisco}
+\begin{tightitemize}
+\item Built Unit21's core Transaction Monitoring engine, increasing its performance by \textbf{50\%} and supporting \textbf{10x} more functionality.
+\item Tech led migrating the entire system to a new \textbf{persistence engine}, involving \textbf{5+} teams, \textbf{25+} engineers, \textbf{4+} new components, raising the ceiling of data volume by \textbf{30x}, and reducing the unit cost by \textbf{50\%}.
+\item Oversaw the architectural migration to \textbf{Microservices}, contributed to 3--4 services, and \textbf{more than doubled} the ML team's iteration speed.
+\item Grew a team from \textbf{3} to \textbf{15} people and owned many org-wide initiatives such as hiring processes \& OKR planning.
+\end{tightitemize}
+
+\sectionspace % Some whitespace after the section
+\vspace{-0.3em}
+%------------------------------------------------
+
+\runsubsection{Wise (ex. TransferWise)}
+\descript{| Senior Software Engineer}
+
+\location{10/2018 – 10/2020 | New York}
+\begin{tightitemize}
+\item Developed an optimized internal development environment on Kubernetes, improving setup time from \textbf{2h} (50\% failure rate) to \textbf{6min}.
+\item Consulted teams across global offices to migrate \textbf{50+} services onto Kubernetes \& the cloud.
+\item Established a Spring Boot service template that became the default way of creating new services, used for \textbf{100+} of them.
+\end{tightitemize}
+
+\sectionspace % Some whitespace after the section
+\vspace{-0.3em}
+%------------------------------------------------
+
+\runsubsection{Others}
+\descript{| Software Engineer}
+
+\location{09/2015 – 10/2018 | Toronto, Canada}
+\begin{tightitemize}
+\item Lead Engineer \textbf{@\href{https://kooltra.com/}{Kooltra}}, a Foreign Exchange back office system.
+\item Software Engineer \textbf{@\href{https://connected.io/}{Connected}}, building a prototype IoT platform.
+\item Software Engineer \textbf{@\href{https://www.oanda.com/us-en/}{OANDA}}, a currency trading company.
+\end{tightitemize}
+
+\end{minipage} % The end of the right column
+
+%----------------------------------------------------------------------------------------
+%	SECOND PAGE (EXAMPLE)
+%----------------------------------------------------------------------------------------
+
+%\newpage % Start a new page
+
+%\begin{minipage}[t]{0.33\textwidth} % The left column takes up 33% of the text width of the page
+
+%\section{Example Section}
+
+%\end{minipage} % The end of the left column
+%\hfill
+%\begin{minipage}[t]{0.66\textwidth} % The right column takes up 66% of the text width of the page
+
+%\section{Example Section 2}
+
+%\end{minipage} % The end of the right column
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

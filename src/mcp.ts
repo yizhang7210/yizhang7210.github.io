@@ -85,6 +85,12 @@ export async function mcpJson() {
         filter: { field: 'id', equals: '{question}' },
       },
       {
+        name: 'get_resume',
+        title: 'Resume',
+        description: `${name}'s current resume in Markdown: experience, skills, education and publications. Generated from the same LaTeX source as the PDF at /resume_yi_zhang.pdf.`,
+        source: '/resume_yi_zhang.md',
+      },
+      {
         name: 'get_recruiter_info',
         title: 'For recruiters',
         description: `What ${name} is looking for and how to reach out, technical highlights, and short answers to common behavioral questions.`,
