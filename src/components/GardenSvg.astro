@@ -202,7 +202,7 @@ type Stone = {
 
 function makeStone(company: (typeof sorted)[number], x: number, y: number, rx: number, ry: number, nx: number, ny: number, isParallel = false): Stone {
   const color = colorFor(company.country);
-  const stars = company.rating / 2;
+  const stars = (company.rating ?? 0) / 2;
   return {
     company,
     x,
@@ -666,7 +666,7 @@ const nameY = narrow ? 7 : -7;
                 <rect class="stone-text" x={s.x - badgeW / 2} y={s.y + 1} width={badgeW} height="22" rx="11" fill="rgba(30, 28, 23, 0.85)" />
                 <text class="stone-text" x={s.x} y={s.y + 16.5} text-anchor="middle" font-size="12" font-weight="600">
                   <tspan fill="#fcc63c" font-size="13.5" font-weight="700">{'★'.repeat(s.fullStars)}{s.halfStar ? '½' : ''}</tspan>
-                  <tspan dx="5" fill="#ffffff">{yearText(s)}</tspan>
+                  <tspan dx={starsLen ? 5 : 0} fill="#ffffff">{yearText(s)}</tspan>
                 </text>
               </>
             )}

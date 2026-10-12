@@ -6,7 +6,7 @@ const companies = defineCollection({
     name: z.string(),
     logo: z.string(),
     order: z.number(),
-    rating: z.number(),
+    rating: z.number().optional(), // out of 10; left out to show no stars (e.g. too early to tell)
     scope: z.number(),
     city: z.string(),
     country: z.string(),
@@ -28,7 +28,6 @@ const about = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
-    subtitle: z.string(),
     links: z.array(z.object({
       label: z.string(),
       url: z.string(),

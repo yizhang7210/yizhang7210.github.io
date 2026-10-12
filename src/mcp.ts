@@ -24,7 +24,7 @@ export async function careerJson() {
       startDate: d.startDate,
       endDate: d.endDate,
       partTime: d.track === 'parallel',
-      enjoyment: d.rating / 2, // out of 5, as the stars on the home page
+      enjoyment: d.rating === undefined ? undefined : d.rating / 2, // out of 5, as the stars on the home page
       url: `/company/${slug}/`,
     };
   });

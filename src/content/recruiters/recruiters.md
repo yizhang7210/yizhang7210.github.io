@@ -9,7 +9,7 @@ portfolio:
     skills: ["Python", "Buck", "Test infrastructure", "Technical leadership"]
     story: "meta#migration"
   - title: "Large-scale data infra migration (Unit21)"
-    summary: "Tech-led the move off a single Postgres database onto a new data stack, coordinating 35+ engineers across almost every team."
+    summary: "Tech-led the move off a single Postgres database onto a new data stack, coordinating 25+ engineers across almost every team."
     skills: ["Snowflake", "Databricks", "Stream processing", "Technical leadership"]
     links:
       - label: "Slide deck"

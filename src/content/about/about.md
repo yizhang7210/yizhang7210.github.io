@@ -1,6 +1,5 @@
 ---
 name: "Yi Zhang"
-subtitle: "Software Builder | Creative Problem Solver"
 links:
   - label: "LinkedIn"
     url: "https://www.linkedin.com/in/yizhang7210/"
